@@ -28,6 +28,7 @@ import math
 import numpy
 import os
 import tempfile
+
 import pyFAI
 
 class DiffractionAnalysis(AbstractAnalysis):
@@ -39,6 +40,7 @@ class DiffractionAnalysis(AbstractAnalysis):
                  input_path=None,
                  pattern_indices=None,
                  poissonize=True,
+                 mask=None
             ):
         """ Constructor for the DiffractionAnalysis class.
 
@@ -55,6 +57,9 @@ class DiffractionAnalysis(AbstractAnalysis):
         :param poissonize: Whether to add Poisson noise to the integer photon numbers (default True).
         :type poissonize: bool
 
+        :param mask: Mask to multiply on each pattern.
+        :type mask: numpy.array
+
         """
 
         # Initialize base class. This takes care of parameter checking.
@@ -66,8 +71,17 @@ class DiffractionAnalysis(AbstractAnalysis):
 
         # Init attributes.
         self.poissonize = poissonize
-        self.__parameters = diffractionParameters(self.input_path)
+        self.parameters = diffractionParameters(self.input_path)
 
+        self.mask = mask
+
+    @property
+    def parameters(self):
+        return self.__parameters
+
+    @parameters.setter
+    def parameters(self, val):
+        self.__parameters = val
     @property
     def pattern_indices(self):
         """ Query pattern indices attribute. """
@@ -109,10 +123,27 @@ class DiffractionAnalysis(AbstractAnalysis):
 
         self.__poissonize = val
 
+    @property
+    def mask(self):
+        """ Query the mask. """
+        return self.__mask
+    @mask.setter
+    def mask(self, val):
+        """ Set the 'mask' flag."""
+        # Handle default.
+        if val is None:
+            self.__mask = 1.
+            return
+        if not isinstance(val, numpy.ndarray):
+            raise TypeError('The parameter "mask" must be a numpy.array.')
+
+        self.__mask = val
+
 
     def patternGenerator(self):
         """ Yield an iterator over a given pattern sequence from a diffraction file.
         """
+
         indices = self.pattern_indices
         path = self.input_path
         if os.path.isdir(path): # legacy format.
@@ -152,11 +183,37 @@ class DiffractionAnalysis(AbstractAnalysis):
 
                     diffr = h5[path_to_data].value
 
-                    yield diffr
+                    yield diffr*self.mask
 
 
 
-    def plotPattern(self, operation=None, logscale=False, print_ai=False):
+    def plotRadialProjection(self, operation=None, logscale=False):
+        """ Plot the radial projection of a pattern.
+
+        :param operation: Operation to apply to selected patterns (default numpy.sum).
+        :type operation: python function
+        :note operation: Operation must accept a 3D numpy.array as first input argument and the "axis" keyword-argument. Operation must return a 2D numpy.array. Axis will always be chosen as axis=0.
+        :example operation: numpy.mean, numpy.std, numpy.sum
+
+        :param logscale: Whether to plot the intensity on a logarithmic scale (z-axis) (default False).
+        :type logscale: bool
+
+        """
+        # Handle default operation
+        if operation is None:
+            operation = numpy.sum
+
+        # Get pattern to plot.
+        pi = self.patterns_iterator
+        if len(self.pattern_indices) == 1:
+            pattern_to_plot = pi.next()
+        else:
+            pattern_to_plot = operation(numpy.array([p for p in pi]), axis=0)
+
+        # Plot radial projection.
+        plotRadialProjection(pattern_to_plot, self.__parameters, logscale)
+
+    def plotPattern(self, operation=None, logscale=False):
         """ Plot a pattern.
 
         :param operation: Operation to apply to selected patterns (default numpy.sum).
@@ -167,19 +224,15 @@ class DiffractionAnalysis(AbstractAnalysis):
         :param logscale: Whether to plot the intensity on a logarithmic scale (z-axis) (default False).
         :type logscale: bool
 
-        :param print_ai: Whether to print out the azimuthally integrated pattern. (default False).
-        :type print_ai: bool
-
         """
 
         # Handle default operation
-        if operation is None:
+        if operation is not None and len(self.pattern_indices) == 1:
+            print "WARNING: Giving an operation with a single pattern has no effect."
+            operation = None
+        if operation is None and len(self.pattern_indices) > 1:
             operation = numpy.sum
 
-        # Complain if operating on single pattern.
-        else:
-            if len(self.pattern_indices) == 1:
-                print "WARNING: Giving an operation with a single pattern has no effect."
         # Get pattern to plot.
         pi = self.patterns_iterator
         if len(self.pattern_indices) == 1:
@@ -189,12 +242,6 @@ class DiffractionAnalysis(AbstractAnalysis):
 
         # Plot image and colorbar.
         plotImage(pattern_to_plot, logscale)
-
-        # Plot resolution rings.
-        plotResolutionRings(self.__parameters)
-
-        # Plot radial projection.
-        plotRadialProjection(pattern_to_plot, self.__parameters, logscale, print_ai)
 
     def statistics(self):
         """ Get statistics of photon numbers per pattern (mean and rms) over selected patterns and plot a historgram. """
@@ -248,8 +295,19 @@ class DiffractionAnalysis(AbstractAnalysis):
         # Make the animated gif.
         os.system("convert -delay 100 %s %s" %(os.path.join(tmp_out_dir, "*.png"), output_path) )
 
-def plotRadialProjection(pattern, parameters, logscale=True, print_to_stdout=False):
+def plotRadialProjection(pattern, parameters, logscale=True):
     """ Perform integration over azimuthal angle and plot as function of radius. """
+
+    qs, intensities = azimuthalIntegration(pattern, parameters)
+
+    if logscale:
+        plt.semilogy(qs, intensities)
+    else:
+        plt.plot(qs, intensities)
+    plt.xlabel("q (1/nm)")
+    plt.ylabel("Intensity (arb. units)")
+
+def azimuthalIntegration(pattern, parameters):
 
     # Extract parameters.
     beam = parameters['beam']
@@ -285,25 +343,13 @@ def plotRadialProjection(pattern, parameters, logscale=True, print_to_stdout=Fal
             pixelX=apix*1e6,
             pixelY=apix*1e6,
             )
-
     qs, intensities = azimuthal_integrator.integrate1d(
             pattern,
             512,
             unit="q_nm^-1",
             )
 
-    plt.figure()
-    if logscale:
-        plt.semilogy(qs, intensities)
-    else:
-        plt.plot(qs, intensities)
-    plt.xlabel("q (1/nm)")
-    plt.ylabel("Intensity (arb. units)")
-
-    if print_to_stdout:
-        for q,i in zip(qs, intensities):
-            print "8.7e\t%8.7e" % (q,i)
-
+    return qs, intensities
 
 def diffractionParameters(path):
     """ Extract beam parameters and geometry from given file or directory.
@@ -325,14 +371,16 @@ def diffractionParameters(path):
     parameters_dict = {'beam':{}, 'geom':{}}
 
     # Open file.
-    with h5py.File(h5_file, 'r') as h5:
-        # Loop over entries in /params.
-        for top_key in ['beam', 'geom']:
-            # Loop over groups.
-            for key, val in h5['params/%s' % (top_key)].iteritems():
-                # Insert into return dictionary.
-                parameters_dict[top_key][key] = val.value
-
+    try:
+        with h5py.File(h5_file, 'r') as h5:
+            # Loop over entries in /params.
+            for top_key in ['beam', 'geom']:
+                # Loop over groups.
+                for key, val in h5['params/%s' % (top_key)].iteritems():
+                    # Insert into return dictionary.
+                    parameters_dict[top_key][key] = val.value
+    except:
+        pass
     # Return.
     return parameters_dict
 
@@ -349,7 +397,7 @@ def plotImage(pattern, logscale=False):
 
     if logscale:
         if mn <= 0.0:
-            mn += pattern.min()+1e-5
+            mn += pattern.min()+1e-1
             pattern = pattern.astype(float) + mn
         plt.imshow(pattern, norm=mpl.colors.LogNorm(vmin=mn, vmax=mx), cmap="viridis")
     else:
@@ -421,15 +469,19 @@ def photonStatistics(stack):
     avg_photons = numpy.mean(photons)
     rms_photons =  numpy.std(photons)
 
-    print "***********************"
-    print "avg = %s, std = %s" % (avg_photons, rms_photons)
-    print "***********************"
+    print "*************************"
+    print "avg = %6.5e" % (avg_photons)
+    print "std = %6.5e" % (rms_photons)
+    print "*************************"
 
 
     # Plot histogram.
     plt.figure()
-    max_photon_number = numpy.max( photons )
-    min_photon_number = numpy.min( photons )
+    max_photon_number = int(numpy.max( photons ))
+    min_photon_number = int(numpy.min( photons ))
+    if max_photon_number == min_photon_number:
+        max_photon_number += 1
+
     binwidth = max_photon_number - min_photon_number
     number_of_bins = min(20, number_of_images)
     binwidth = int( binwidth / number_of_bins )
@@ -439,4 +491,5 @@ def photonStatistics(stack):
     plt.xlabel("Photons")
     plt.ylabel("Histogram")
     plt.title("Photon number histogram")
+
 

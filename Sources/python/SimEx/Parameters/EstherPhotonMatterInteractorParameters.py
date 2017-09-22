@@ -207,10 +207,10 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
 
         :param sample_thickness: The sample thickness (micrometers)
         :type sample_thickness: float
-        
+
         :param layer1: The layer1 material (from list of materials)
         :type layer1: str
-        
+
         :param layer2: The layer2 material (from list of materials)
         :type layer2: str
 
@@ -248,7 +248,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
         :type rad_transfer: boolean
 
         """
-        
+
         # If parameters already exist, read from parameters file
         if read_from_file is not None:
             print ( "Parameters file is located here: %s" % (read_from_file))
@@ -294,7 +294,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             self.__laser_intensity = checkAndSetLaserIntensity(laser_intensity)
             self.__run_time = checkAndSetRunTime(run_time)
             self.__delta_time = checkAndSetDeltaTime(delta_time)
-            
+
             self.force_passage = force_passage
             self.without_therm_conduc = without_therm_conduc
             self.rad_transfer = rad_transfer
@@ -368,12 +368,12 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
         self._final_feather_zone_width = round(minimum_zone_width*(r**n),4)
         self._non_feather_zone_width = self.ablator_thickness-feather_zone_width
         self._non_feather_zones = int(self._non_feather_zone_width/(minimum_zone_width*(r**n)))
-        
+
 
         self._mass_of_zone = self._final_feather_zone_width*ESTHER_MATERIAL_DICT[self.ablator]["mass_density"]
         width_of_sample_zone = self._mass_of_zone/ESTHER_MATERIAL_DICT[self.sample]["mass_density"]
         self.__number_of_sample_zones=int(self.sample_thickness/width_of_sample_zone)
-        
+
         print ("Final feather zone width: ", self._final_feather_zone_width)
         print ("Mass of zone: ", self._mass_of_zone)
         print ("Number of non-feathered zones: ", self._non_feather_zones)
@@ -381,11 +381,11 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
         if self.layer1 is not None:
             width_of_layer1_zone = self._mass_of_zone/ESTHER_MATERIAL_DICT[self.layer1]["mass_density"]
             self.__number_of_layer1_zones=int(self.layer1_thickness/width_of_layer1_zone)
-        
+
         if self.layer2 is not None:
             width_of_layer2_zone = self._mass_of_zone/ESTHER_MATERIAL_DICT[self.layer2]["mass_density"]
             self.__number_of_layer2_zones=int(self.layer2_thickness/width_of_layer2_zone)
-            
+
         if self.window is not None:
             width_of_window_zone = self._mass_of_zone/ESTHER_MATERIAL_DICT[self.window]["mass_density"]
             self.__number_of_window_zones=int(self.window_thickness/width_of_window_zone)
@@ -450,7 +450,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
                 input_deck.write('NOMBRE_MAILLES=%d\n' % (self.__number_of_layer2_zones))
                 input_deck.write('MECANIQUE_RAM\n')
                 input_deck.write('\n')
-        
+
             input_deck.write('- %.1f um %s layer\n' % (self.sample_thickness, self.sample))
             input_deck.write('NOM_MILIEU=%s_2\n' % (ESTHER_MATERIAL_DICT[self.sample]["shortname"]))
             input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.sample]["eos_name"]))
@@ -461,7 +461,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             input_deck.write('NOMBRE_MAILLES=%d\n' % (self.__number_of_sample_zones))
             input_deck.write('MECANIQUE_RAM\n')
             input_deck.write('\n')
-            
+
             # If using 3 layers (ablator, layer1, sample)
             if self.number_of_layers == 3:
                 input_deck.write('- %.1f um %s layer\n' % (self.layer1_thickness, self.layer1))
@@ -484,7 +484,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             input_deck.write('NOMBRE_MAILLES=%d\n' % (self._non_feather_zones)) # Number of zones
             input_deck.write('MECANIQUE_RAM\n') # Needs to be an option to use this.
             input_deck.write('\n')
-            
+
             input_deck.write('NOM_MILIEU=%s_abl2\n' % (ESTHER_MATERIAL_DICT[self.ablator]["shortname"])) # 2nd PART OF ABLATOR
             input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.ablator]["eos_name"])) # ABLATOR EOS
             input_deck.write('EPAISSEUR_MILIEU=%.1fe-6\n' % (self._feather_zone_width)) # Feather thickness
@@ -602,7 +602,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
     def sample_thickness(self, value):
            """ Set the sample thickness to the value. """
            self.__sample_thickness = checkAndSetSampleThickness(value)
-    
+
     @property
     def layer1(self):
            """ Query for the layer1 type. """
@@ -711,7 +711,6 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
         """ Set simulation time resolution delta t, ns"""
         self.__delta_time = checkAndSetDeltaTime(value)
 
-
     def _setDefaults(self):
         """ Method to pick sensible defaults for all parameters. """
         pass
@@ -798,14 +797,13 @@ def checkAndSetAblatorThickness(ablator_thickness):
     # Check if ablator is between 5 and 100 um
     if ablator_thickness < 5.0 or ablator_thickness > 100.0:
         raise ValueError( "Ablator must be between 5.0 and 100.0 microns")
-    
+
     # TO DO PLACEHOLDER
     # IF LASER INTENSITY IS TOO HIGH, ABLATOR MUST BE THICK TO ALLOW FOR ENOUGH MATERIAL TO VAPORISE (CH)
 
     print ( "Ablator thickness is %4.1f " % ablator_thickness)
 
     return ablator_thickness
-
 
 def checkAndSetSample(sample):
     """
@@ -831,12 +829,11 @@ def checkAndSetSample(sample):
 
     return sample
 
-
 def checkAndSetSampleThickness(sample_thickness):
     """
     Utility to check that the sample thickness is in permitted range set by Esther.
     """
-    
+
     # Raise if not set.
     if sample_thickness is None:
         raise RuntimeError( "Sample thickness not specified.")
@@ -850,7 +847,6 @@ def checkAndSetSampleThickness(sample_thickness):
         raise ValueError( "Ablator must be between 1.0 and 200.0 microns")
 
     return sample_thickness
-
 
 def checkAndSetLayer1(layer1):
     """
@@ -877,7 +873,6 @@ def checkAndSetLayer1(layer1):
 
     return layer1
 
-
 def checkAndSetLayer1Thickness(layer1_thickness):
     """
     Utility to check that the layer1 thickness is in permitted range set by Esther.
@@ -896,7 +891,6 @@ def checkAndSetLayer1Thickness(layer1_thickness):
         raise ValueError( "layer1 must be between 1.0 and 200.0 microns")
 
     return layer1_thickness
-
 
 def checkAndSetLayer2(layer2):
     """
@@ -923,7 +917,6 @@ def checkAndSetLayer2(layer2):
 
     return layer2
 
-
 def checkAndSetLayer2Thickness(layer2_thickness):
     """
     Utility to check that the layer2 thickness is in permitted range set by Esther.
@@ -932,7 +925,7 @@ def checkAndSetLayer2Thickness(layer2_thickness):
     # Set default
     if layer2_thickness is None:
         return 0.0
-    
+
     # Check if number.
     if not isinstance( layer2_thickness, (float, int)):
         raise TypeError( "The parameter 'layer2_thickness' must be a numerical type (float or int.)")
@@ -947,7 +940,7 @@ def checkAndSetWindow(window):
     """
     Utility to check that the window exists in the EOS database.
     """
-    
+
     elements = ["LiF", "SiO2", "Diamond", "Quartz" ]
 
     if window is None:
@@ -999,7 +992,7 @@ def checkAndSetLaserWavelength(laser_wavelength):
     # Check if number.
     if not isinstance( laser_wavelength, (float, int)):
         raise TypeError( "The parameter 'laser_wavelength' must be a numerical type (float or int.)")
-    
+
     if laser_wavelength <= 300 or laser_wavelength > 1200:
         raise ValueError( "laser wavelength must be between 300 and 1200 nm")
 

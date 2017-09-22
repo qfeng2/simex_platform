@@ -41,16 +41,23 @@ def main(args=None):
         analyzer.plotPattern(logscale=args.logscale,
                              operation=eval(args.operation),
                              )
-        plt.show()
+    # Plot if requested.
+    if args.radial:
+        analyzer.plotRadialProjection(logscale=args.logscale,
+                             operation=eval(args.operation),
+                             )
+
+    if args.statistics:
+        analyzer.statistics()
+
+    plt.show()
+
 
     # Animate if requested.
     if args.animation_filename:
         analyzer.animatePatterns(output_path=args.animation_filename)
 
         print "Animated gif saved to %s." % (analyzer._DiffractionAnalysis__animation_output_path)
-
-    if args.statistics:
-        analyzer.statistics()
 
 if __name__ == '__main__':
 
@@ -75,6 +82,14 @@ if __name__ == '__main__':
                         dest="plot",
                         default=False,
                         help="Flag indicating whether to render a plot or not.")
+
+    parser.add_argument("-R",
+                        "--radial",
+                        action="store_true",
+                        dest="radial",
+                        default=False,
+                        help="Flag indicating whether to render a radial projection plot or not.")
+
 
     parser.add_argument("-l",
                         "--logscale",

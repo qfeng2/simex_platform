@@ -35,7 +35,8 @@ from SimEx.Utilities import xpdb
 from Bio import PDB
 from scipy.constants import m_e, c, e
 
-from wpg.converters.genesis_v2 import read_genesis_file
+from wpg.converters.genesis_v2 import read_genesis_file as genesis2
+from wpg.converters.genesis import read_genesis_file as genesis3
 
 
 import uuid
@@ -78,14 +79,77 @@ def checkAndGetPDB( path ):
             urllib.urlcleanup()
             download_target = pdb_list.retrieve_pdb_file( pdb_target_name, pdir=pdb_target_dir, file_format='pdb' )
         except:
-            raise IOError( "Database query failed.")
+            raise
+
         finally:
             urllib.urlcleanup()
+
 
         # Move and rename the downloaded file.
         shutil.move( download_target, path  )
 
+        # Cleanup.
+        shutil.rmtree('obsolete')
+
     return path
+
+def loadXYZ( path=None):
+    """ Load atomic structure from a xyz file and setup a dictionary readable by xmdyn calculator.
+
+    :param path: The path to the xyz file.
+    """
+    # Setup the return dictionary.
+    atoms_dict = {'Z' : [],     # Atomic number.
+                  'r' : [],     # Cartesian coordinates.
+                  'selZ' : {},  # Abundance of each element.
+                  'N' : 0,      # Number of atoms.
+                  }
+
+    with open(path) as fin:
+        natoms = int(fin.readline())
+        title = fin.readline()[:-1]
+
+        print "Reading %d atoms of %s from %s." % (natoms, title, path)
+        for x in range(natoms):
+            line = fin.readline().split()
+
+            # Get the element symbol from pdb.
+            symbol = line[0]
+
+            # Get the corresponding periodic table element as an instance.
+            atom_obj = getattr(periodictable, symbol)
+
+            # Query the atomic number.
+            charge = atom_obj.number
+
+            xyz = numpy.zeros(3, dtype="float64")
+            xyz[:] = map(float, line[1:4])
+
+            # Write to dict.
+            atoms_dict['Z'].append(charge)
+            atoms_dict['r'].append(xyz*1e-10)
+
+
+    if len(atoms_dict['Z']) == 0:
+        raise IOError( "Error reading structure file %s. " % (path) )
+
+    # Get unique elements.
+    for sel_Z in numpy.unique( atoms_dict['Z'] ) :
+        atoms_dict['selZ'][sel_Z] = numpy.nonzero( atoms_dict['Z'] == sel_Z )[0]
+
+    # Count number of atoms.
+    atoms_dict['N'] = len( atoms_dict['Z'] )
+
+    # Convert to numpy arrays.
+    atoms_dict['Z'] = numpy.array( atoms_dict['Z'] )
+    atoms_dict['r'] = numpy.array( atoms_dict['r'] )
+
+    # Return.
+    return atoms_dict
+
+
+
+
 
 
 def loadPDB( path = None ):
@@ -267,7 +331,7 @@ def genesis_dfl_to_wavefront(genesis_out, genesis_dfl):
     Based on WPG/wpg/converters/genesis_v2.py
     '''
 
-    return read_genesis_file(genesis_out, genesis_dfl)
+    return genesis2(genesis_out, genesis_dfl)
 
 def wgetData(url=None, path=None):
     """ Download a given url. """

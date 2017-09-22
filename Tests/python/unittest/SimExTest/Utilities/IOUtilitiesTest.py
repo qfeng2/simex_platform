@@ -1,4 +1,4 @@
-""" Test module for the entity checks.  """
+""" Test module for the IO Utilities.  """
 ##########################################################################
 #                                                                        #
 # Copyright (C) 2015-2017 Carsten Fortmann-Grote                         #
@@ -57,8 +57,6 @@ class IOUtilitiesTest(unittest.TestCase):
             if os.path.isdir(p):
                 shutil.rmtree(p)
 
-
-
     def testLoadPDB(self):
         """ Check that we can load a pdb and convert it to a dict. """
 
@@ -87,6 +85,26 @@ class IOUtilitiesTest(unittest.TestCase):
         # Check exception on wrong file type.
         self.assertRaises( IOError, IOUtilities.loadPDB, generateTestFilePath("sample.h5") )
 
+    def testLoadXYZ(self):
+        """ Check that we can load a xyz file and convert it to a dict. """
+
+        # Setup path to xyz file.
+        xyz_path = generateTestFilePath("Fe2O3_poly_test.xyz")
+
+        # Attempt to load it.
+        return_dict = IOUtilities.loadXYZ(xyz_path)
+
+        # Check that return type is a dict.
+        self.assertIsInstance( return_dict, dict )
+
+        # Check items on dict.
+        self.assertIsInstance( return_dict['Z'], numpy.ndarray )
+        self.assertIsInstance( return_dict['r'], numpy.ndarray )
+        self.assertIsInstance( return_dict['selZ'], dict )
+        self.assertIsInstance( return_dict['N'], int )
+        self.assertEqual( return_dict['Z'].shape, (100,) )
+        self.assertEqual( return_dict['r'].shape, (100,3) )
+
     def testQueryNonexisitngPDB(self):
         """ Check exception if querying a non-existing pdb """
         # Check exception on wrong input type.
@@ -96,7 +114,7 @@ class IOUtilitiesTest(unittest.TestCase):
     def testQueryPDB(self):
         """ Check that we can query a non-existing pdb from pdb.org and convert it to a dict. """
         # Setup path to pdb file.
-        pdb_path = '2nip.pdb'
+        pdb_path = '5UDC.pdb'
         self.__files_to_remove.append(pdb_path)
         self.__paths_to_remove.append('obsolete')
 
@@ -112,7 +130,7 @@ class IOUtilitiesTest(unittest.TestCase):
     def testQueryPDBTwice(self):
         """ Check that we can do two subsequent queries (fails if urllib.urlcleanup is not called.) """
         # Setup path to pdb file.
-        pdb_path = '2nip.pdb'
+        pdb_path = '5loy.pdb'
         self.__files_to_remove.append(pdb_path)
         self.__paths_to_remove.append('obsolete')
 
@@ -162,6 +180,7 @@ class IOUtilitiesTest(unittest.TestCase):
 
     def testGenesisDFLToWPGWavefront(self):
         """ Check the conversion from genesis dfl to wpg readable hdf5. """
+
         genesis_out_file = generateTestFilePath("genesis/lcls/lcls.out")
         genesis_dfl_file = generateTestFilePath("genesis/lcls/lcls.out.dfl")
 

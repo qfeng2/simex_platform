@@ -117,7 +117,7 @@ class CrystFELPhotonDiffractor(AbstractPhotonDiffractor):
         return np
 
     def backengine(self):
-        """ This method drives the backengine singFEL."""
+        """ This method drives the backengine CrystFEL.pattern_sim."""
 
         # Setup directory structure as needed.
         if not os.path.isdir( self.output_path ):
@@ -156,6 +156,19 @@ class CrystFELPhotonDiffractor(AbstractPhotonDiffractor):
             if self.parameters.beam_parameters.photon_energy_spectrum_type.lower() == "sase":
                 command_sequence.append('--sample-spectrum=512')
 
+        # Handle intensities list if present.
+        if self.parameters.intensities_file is not None:
+            command_sequence.append('--intensities=%s' % (self.parameters.intensities_file))
+
+        # Handle powder if present.
+        if self.parameters.powder is True:
+            command_sequence.append('--powder=%s' % (os.path.join(self.output_path, "powder.h5")))
+
+        # Handle size range if present.
+        if self.parameters.crystal_size_range is not None:
+            command_sequence.append('--min-size=%f' % (self.parameters.crystal_size_range[0]*1e9 ))
+            command_sequence.append('--max-size=%f' % (self.parameters.crystal_size_range[1]*1e9 ))
+
 
         # put MPI and program arguments together
         args = shlex.split(mpicommand) + command_sequence
@@ -163,8 +176,7 @@ class CrystFELPhotonDiffractor(AbstractPhotonDiffractor):
         command = " ".join(args)
 
         if 'SIMEX_VERBOSE' in os.environ:
-            if 'MPI' in  os.environ['SIMEX_VERBOSE']:
-                print("CrystFELPhotonDiffractor backengine mpicommand: "+mpicommand)
+            print("CrystFELPhotonDiffractor backengine command: "+command)
 
         # Run the backengine command.
         proc = subprocess.Popen(command, shell=True)
@@ -185,7 +197,7 @@ class CrystFELPhotonDiffractor(AbstractPhotonDiffractor):
 
     def saveH5(self):
         """
-        Method to save the object to a file. Creates links to h5 files that all contain only one pattern.
+        Method to save the output to a file. Creates links to h5 files that all contain only one pattern.
         """
 
         # Path where individual h5 files are located.
@@ -196,6 +208,18 @@ class CrystFELPhotonDiffractor(AbstractPhotonDiffractor):
 
         # Setup new file.
         with h5py.File( self.output_path + ".h5" , "w") as h5_outfile:
+
+            data_group = h5_outfile.create_group("data")
+            params_group = h5_outfile.create_group("params")
+            beam_params_group = params_group.create_group("beam")
+            #geom_params_group = params_group.create_group("geom")
+
+            beam_params_group["photonEnergy"] = self.parameters.beam_parameters.photon_energy
+            beam_params_group["photonEnergy"].attrs["unit_symbol"] = "eV"
+            beam_params_group["photonEnergy"].attrs["unit_longname"] = "electronvolt"
+            beam_params_group["focusArea"] = self.parameters.beam_parameters.beam_diameter_fwhm**2
+            beam_params_group["focusArea"].attrs["unit_symbol"] = "m^2"
+            beam_params_group["focusArea"].attrs["unit_longname"] = "square_metre"
 
             # Files to read from.
             individual_files = [os.path.join( path_to_files, f ) for f in os.listdir( path_to_files ) ]
@@ -209,15 +233,16 @@ class CrystFELPhotonDiffractor(AbstractPhotonDiffractor):
                     # Get file ID.
                     file_ID = os.path.split(ind_file)[-1].split(".h5")[0].split("_")[-1]
 
+                    # Create group
+                    id_group = data_group.create_group(file_ID)
+
                     # Links must be relative.
                     relative_link_target = os.path.relpath(path=ind_file, start=os.path.dirname(os.path.dirname(ind_file)))
 
-                    for l1 in h5_infile.keys():
-
-                        # Link in the data.
-                        path_in_origin = "%s/%s" % (file_ID,l1)
-                        path_in_target = "%s" % (l1)
-                        h5_outfile[path_in_origin] = h5py.ExternalLink(relative_link_target, path_in_target)
+                    # Link in the data.
+                    path_in_target = "/data/data"
+                    path_in_origin = "data/%s/data" % (file_ID)
+                    h5_outfile[path_in_origin] = h5py.ExternalLink(relative_link_target, path_in_target)
 
                     # Close input file.
                     h5_infile.close()

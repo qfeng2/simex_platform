@@ -96,8 +96,11 @@ class CrystFELPhotonDiffractorTest(unittest.TestCase):
                 output_path="diffr",
                 )
 
+        # Set spectrum type to tophat otherwise calculation will never finish.
+        diffractor.parameters.beam_parameters.photon_energy_spectrum_type="tophat"
+
         # Check that beam parameters have been updated from prop output.
-        self.assertAlmostEqual( diffractor.parameters.beam_parameters.photon_energy , 4947.34315, 5 )
+        self.assertAlmostEqual( diffractor.parameters.beam_parameters.photon_energy , 4972.8402471221643, 5 )
 
     def testBackengineWithPropInput(self):
         """ Check that beam parameters can be taken from a given propagation output file."""
@@ -117,6 +120,9 @@ class CrystFELPhotonDiffractorTest(unittest.TestCase):
                 input_path=TestUtilities.generateTestFilePath("prop_out_0000001.h5"),
                 output_path="diffr",
                 )
+
+        # Set spectrum type to tophat otherwise calculation will never finish.
+        diffractor.parameters.beam_parameters.photon_energy_spectrum_type="tophat"
 
         # Check that beam parameters have been updated from prop output.
         diffractor.backengine()
@@ -221,6 +227,19 @@ class CrystFELPhotonDiffractorTest(unittest.TestCase):
         self.assertIn( "diffr_out_0000001.h5" , os.listdir( "diffr" ))
         self.assertIn( "diffr_out_0000002.h5" , os.listdir( "diffr" ))
 
+        # Open linked h5 file.
+        with h5py.File(diffractor.output_path, 'r') as h5:
+            self.assertIn("data" , h5.keys())
+            self.assertIn("0000001" , h5["data"].keys())
+            self.assertIn("0000002" , h5["data"].keys())
+            self.assertIn("data" , h5["data/0000001"].keys())
+            self.assertIn("data" , h5["data/0000002"].keys())
+
+            self.assertIn("params" , h5.keys())
+            self.assertIn("beam" , h5["params"].keys())
+            self.assertIn("photonEnergy" , h5["params/beam"].keys())
+            self.assertIn("focusArea" , h5["params/beam"].keys())
+
         # Check metafile was created.
         self.assertIn( os.path.split(diffractor.output_path)[-1], os.listdir( os.path.dirname( diffractor.output_path) ) )
 
@@ -242,6 +261,7 @@ class CrystFELPhotonDiffractorTest(unittest.TestCase):
                 pulse_energy=2.0e-3,
                 beam_diameter_fwhm=100e-9,
                 divergence=None,
+                photon_energy_spectrum_type="tophat",
                 )
 
         # Get parameters.
