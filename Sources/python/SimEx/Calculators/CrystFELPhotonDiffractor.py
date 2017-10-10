@@ -21,12 +21,9 @@
 ##########################################################################
 
 import h5py
-import inspect
-import json
 import os
 import subprocess,shlex
 
-import prepHDF5
 from scipy import constants
 
 from SimEx.Calculators.AbstractPhotonDiffractor import AbstractPhotonDiffractor
