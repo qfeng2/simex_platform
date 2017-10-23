@@ -30,6 +30,43 @@ import h5py
 
 from SimEx.Parameters.EstherPhotonMatterInteractorParameters import EstherPhotonMatterInteractorParameters
 
+def samplePT(filename, timeDelay):
+    """ Returns the average P-T state of the sample at specific time delay
+
+    :param filename: Filename of the hdf5 file containing rad-hydro data
+    :type filename: str
+
+    :param timeDelay: Time delay of the requested P-T state.
+    :type timeDelay: float
+    
+    """
+
+    # Get parameters from the corresponding esther run
+    EstherPhotonMatterInteractorParameters(read_from_file=os.path.dirname(filename))
+
+    # Get zone dimensions
+    number_of_sample_zones = esther_parameters._EstherPhotonMatterInteractorParameters__number_of_sample_zones
+    try:
+        number_of_window_zones = esther_parameters._EstherPhotonMatterInteractorParameters__number_of_window_zones
+    except:
+        number_of_window_zones = 0
+
+    # Get data from h5 output.
+    with h5py.File(filename, 'r') as h5:
+        # Time snapshots.
+        snapshots = [int(k) for k in h5["/data"].keys()]
+        snapshots.sort()
+        times = numpy.array([h5["/data/%s" % (s)].attrs["time"] for s in snapshots])*1e9 # ns
+
+        # Get simulation data.
+        positions  = numpy.array([h5["/data/%s/meshes/pos" % (s)].value for s in snapshots])*1e6 # mu
+        pressures  = numpy.array([h5["/data/%s/meshes/pres" % (s)].value for s in snapshots])/1e9 # GPa
+        velocities = -numpy.array([h5["/data/%s/meshes/vel" % (s)].value for s in snapshots])/1e3 # km/s
+        temperatures = numpy.array([h5["/data/%s/meshes/temp" % (s)].value for s in snapshots]) # K
+
+        h5.close()
+
+    
 def radHydroAnalysis(filename):
     """ Generates four plots to analyse shock compression data.
 
