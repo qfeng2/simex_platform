@@ -65,6 +65,16 @@ def samplePT(filename, timeDelay):
         temperatures = numpy.array([h5["/data/%s/meshes/temp" % (s)].value for s in snapshots]) # K
 
         h5.close()
+        
+    # Find limits of sample zone.
+    total_number_of_zones = positions.shape[1]
+    number_of_ablator_zones = total_number_of_zones-number_of_sample_zones-number_of_window_zones
+    
+    sample_indices = range(number_of_window_zones, number_of_window_zones+number_of_sample_zones)
+    #sample_start_index = sample_indices[0]
+    #sample_end_index = sample_indices[-1]
+    sample_start_index = 1
+    sample_end_index =  255
 
     
 def radHydroAnalysis(filename):
