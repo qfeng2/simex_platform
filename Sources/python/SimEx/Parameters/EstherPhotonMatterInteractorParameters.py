@@ -30,148 +30,148 @@ from SimEx.Parameters.AbstractCalculatorParameters import AbstractCalculatorPara
 
 ESTHER_MATERIAL_DICT = { "Aluminium" : {"name" : "Aluminium",
                        "shortname" : "Al#",
-                       "eos_name" : "Al#_e_ses",
-                       "blf_eos" : "Al#_BLF",
+                       "sesame" : "Al#_e_ses",
+                       "blf" : "Al#_BLF",
                        "mass_density" : 2.7,
                        },
                        "CH" : {"name" : "CH",
                        "shortname" : "CH2",
-                       "eos_name" : "CH2_e_ses",
+                       "sesame" : "CH2_e_ses",
                        "mass_density" : 1.044,
                        },
                        "Diamond" : {"name" : "Diamond",
                        "shortname" : "Dia",
-                       "eos_name" : "Dia_e_ses",
+                       "sesame" : "Dia_e_ses",
                        "mass_density" : 3.51,
                        },
                        "Kapton" : {"name" : "Kapton",
                        "shortname" : "Kap",
-                       "eos_name" : "Kap_e_ses",
+                       "sesame" : "Kap_e_ses",
                        "mass_density" : 1.42,
                        },
                        "Molybdenum" : {"name" : "Mo",
                        "shortname" : "Mo#",
-                       "eos_name" : "Mo#_e_ses",
-                       "blf_eos" : "Mo#_BLF",
+                       "sesame" : "Mo#_e_ses",
+                       "blf" : "Mo#_BLF",
                        "mass_density" : 10.2,
                        },
                        "Gold" : {"name" : "Gold",
                        "shortname" : "Au#",
-                       "eos_name" : "Au#_e_ses",
-                       "blf_eos" : "Au#_BLF",
+                       "sesame" : "Au#_e_ses",
+                       "blf" : "Au#_BLF",
                        "mass_density" : 19.3,
                        },
                        "Iron" : {"name" : "Iron",
                        "shortname" : "Fe#",
-                       "eos_name" : "Fe#_e_ses",
-                       "blf_eos" : "Fe#_BLF",
+                       "sesame" : "Fe#_e_ses",
+                       "blf" : "Fe#_BLF",
                        "mass_density" : 7.85,
                        },
                        "Copper" : {"name" : "Copper",
                        "shortname" : "Cu#",
-                       "eos_name" : "Cu#_e_ses",
-                       "blf_eos" : "Cu#_BLF",
+                       "sesame" : "Cu#_e_ses",
+                       "blf" : "Cu#_BLF",
                        "mass_density" : 8.93,
                        },
                        "Tin" : {"name" : "Tin",
                        "shortname" : "Sn#",
-                       "eos_name" : "Sn#_e_ses",
-                       "blf_eos" : "Sn#_BLF",
+                       "sesame" : "Sn#_e_ses",
+                       "blf" : "Sn#_BLF",
                        "mass_density" : 7.31,
                        },
                        "LiF" : {"name" : "Lithium Fluoride",
                        "shortname" : "LiF",
-                       "eos_name" : "LiF_e_ses",
+                       "sesame" : "LiF_e_ses",
                        "mass_density" : 2.64,
                        },
                        "Titanium" : {"name" : "Titanium",
                        "shortname" : "Ti#",
-                       "eos_name" : "Ti#_e_ses",
-                       "blf_eos" : "Ti#_BLF",
+                       "sesame" : "Ti#_e_ses",
+                       "blf" : "Ti#_BLF",
                        "mass_density" : 4.43,
                        },
                        "Berylium" : {"name" : "Berylium",
                        "shortname" : "Be#",
-                       "eos_name" : "Be#_e_ses",
-                       "blf_eos" : "Be#_BLF",
+                       "sesame" : "Be#_e_ses",
+                       "blf" : "Be#_BLF",
                        "mass_density" : 1.85,
                        },
                        "Cobalt" : {"name" : "Cobalt",
                        "shortname" : "Co#",
-                       "eos_name" : "Co#_e_ses",
-                       "blf_eos" : "Co#_BLF",
+                       "sesame" : "Co#_e_ses",
+                       "blf" : "Co#_BLF",
                        "mass_density" : 8.9,
                        },
                        "Chromium" : {"name" : "Chromium",
                        "shortname" : "Cr#",
-                       "eos_name" : "Cr#_e_ses",
-                       "blf_eos" : "Cr#_BLF",
+                       "sesame" : "Cr#_e_ses",
+                       "blf" : "Cr#_BLF",
                        "mass_density" : 7.19,
                        },
                        "Iron2" : {"name" : "Iron2",
                        "shortname" : "Fe2",
-                       "eos_name" : "Fe2_e_ses",
+                       "sesame" : "Fe2_e_ses",
                        "mass_density" : 7.87,
                        },
                        "Water" : {"name" : "Water",
                        "shortname" : "H2O",
-                       "eos_name" : "H20_e_ses",
+                       "sesame" : "H20_e_ses",
                        "mass_density" : 1.0,
                        },
                        "Magnesium" : {"name" : "Magnesium",
                        "shortname" : "Mg#",
-                       "eos_name" : "Mg#_e_ses",
-                       "blf_eos" : "Mg#_BLF",
+                       "sesame" : "Mg#_e_ses",
+                       "blf" : "Mg#_BLF",
                        "mass_density" : 1.74,
                        },
                        "Mylar" : {"name" : "Mylar",
                        "shortname" : "Myl",
-                       "eos_name" : "Myl_e_ses",
+                       "sesame" : "Myl_e_ses",
                        "mass_density" : 1.38,
                        },
                        "Nickel" : {"name" : "Nickel",
                        "shortname" : "Ni#",
-                       "eos_name" : "Ni#_e_ses",
-                       "blf_eos" : "Ni#_BLF",
+                       "sesame" : "Ni#_e_ses",
+                       "blf" : "Ni#_BLF",
                        "mass_density" : 8.9,
                        },
                        "Lead" : {"name" : "Lead",
                        "shortname" : "Pb#",
-                       "eos_name" : "Pb#_e_ses",
-                       "blf_eos" : "Pb#_BLF",
+                       "sesame" : "Pb#_e_ses",
+                       "blf" : "Pb#_BLF",
                        "mass_density" : 11.35,
                        },
                        "Quartz" : {"name" : "Quartz",
                        "shortname" : "Qua",
-                       "eos_name" : "Qua_e_ses",
+                       "sesame" : "Qua_e_ses",
                        "mass_density" : 2.65,
                        },
                        "Silicon" : {"name" : "Silicon",
                        "shortname" : "Si#",
-                       "eos_name" : "Si#_e_ses",
+                       "sesame" : "Si#_e_ses",
                        "mass_density" : 2.33,
                        },
                        "SiliconOxide" : {"name" : "SiliconOxide",
                        "shortname" : "SiO",
-                       "eos_name" : "SiO_e_ses",
+                       "sesame" : "SiO_e_ses",
                        "mass_density" : 2.65,
                        },
                        "Vanadium" : {"name" : "Vanadium",
                        "shortname" : "V##",
-                       "eos_name" : "V##_e_ses",
-                       "blf_eos" : "V##_BLF",
+                       "sesame" : "V##_e_ses",
+                       "blf" : "V##_BLF",
                        "mass_density" : 6.11,
                        },
                        "Tungsten" : {"name" : "Tungsten",
                        "shortname" : "W##",
-                       "eos_name" : "W##_e_ses",
-                       "blf_eos" : "W##_BLF",
+                       "sesame" : "W##_e_ses",
+                       "blf" : "W##_BLF",
                        "mass_density" : 19.35,
                        },
                        "Silver" : {"name" : "Silver",
                        "shortname" : "Ag#",
-                       "eos_name" : "Ag#_e_ses",
-                       "blf_eos" : "Ag#_BLF",
+                       "sesame" : "Ag#_e_ses",
+                       "blf" : "Ag#_BLF",
                        "mass_density" : 10.5,
                        },
            }
@@ -310,15 +310,13 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             self.__laser_intensity = checkAndSetLaserIntensity(laser_intensity)
             self.__run_time = checkAndSetRunTime(run_time)
             self.__delta_time = checkAndSetDeltaTime(delta_time)
-
+            self.__eos_type = checkAndSetEosType(eos_type)
             self.without_therm_conduc = without_therm_conduc
             self.rad_transfer = rad_transfer
         self.checkConsistency()
 
         # Define start up options (called Demmarage in esther)
         self._setDemmargeFlags()
-
-        # Expert mode: Choose EOS type, SESAME or BLF
 
         # Expert mode: Setup zone feathering (spatial resolution)
         self._setupFeathering()
@@ -443,7 +441,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             if self.window is not None:
                 input_deck.write('- %.1f um %s layer\n' % (self.window_thickness, self.window))
                 input_deck.write('NOM_MILIEU=%s\n' % (ESTHER_MATERIAL_DICT[self.window]["shortname"]))
-                input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.window]["eos_name"]))
+                input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.window][self.eos_type]))
                 input_deck.write('EPAISSEUR_VIDE=100e-6\n')
                 input_deck.write('EPAISSEUR_MILIEU=%.1fe-6\n' % (self.window_thickness))
                 # Calculate number of zones in window
@@ -455,7 +453,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             if self.number_of_layers == 4:
                 input_deck.write('- %.1f um %s layer\n' % (self.layer2_thickness, self.layer2))
                 input_deck.write('NOM_MILIEU=%s_2\n' % (ESTHER_MATERIAL_DICT[self.layer2]["shortname"]))
-                input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.layer2]["eos_name"]))
+                input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.layer2][self.eos_type]))
                 if self.window is None:
                     input_deck.write('EPAISSEUR_VIDE=100e-6\n')
                 input_deck.write('EPAISSEUR_MILIEU=%.1fe-6\n' % (self.layer2_thickness))
@@ -467,7 +465,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             # Write sample layer
             input_deck.write('- %.1f um %s layer\n' % (self.sample_thickness, self.sample))
             input_deck.write('NOM_MILIEU=%s_2\n' % (ESTHER_MATERIAL_DICT[self.sample]["shortname"]))
-            input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.sample]["eos_name"]))
+            input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.sample][self.eos_type]))
             if self.number_of_layers == 3: # Add empty space if number of layers = 3 (abl, lay1, sample)
                 if self.window is None: # But only if there is no window.
                     input_deck.write('EPAISSEUR_VIDE=100e-6\n')
@@ -484,7 +482,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             if self.number_of_layers == 3:
                 input_deck.write('- %.1f um %s layer\n' % (self.layer1_thickness, self.layer1))
                 input_deck.write('NOM_MILIEU=%s_2\n' % (ESTHER_MATERIAL_DICT[self.layer1]["shortname"]))
-                input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.layer1]["eos_name"]))
+                input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.layer1][self.eos_type]))
                 # Calculate number of zones
                 input_deck.write('NOMBRE_MAILLES=%d\n' % (self.__number_of_layer1_zones))
                 input_deck.write('MECANIQUE_RAM\n')
@@ -493,7 +491,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             # Write ablator layer
             input_deck.write('- %.1f um %s layer\n' % (self.ablator_thickness, self.ablator))
             input_deck.write('NOM_MILIEU=%s_abl1\n' % (ESTHER_MATERIAL_DICT[self.ablator]["shortname"])) # 1st PART OF ABLATOR
-            input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.ablator]["eos_name"]))# ABLATOR EOS
+            input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.ablator][self.eos_type]))# ABLATOR EOS
             # if only simulating ablator layer, then must include empty (VIDE) layer
             if self.number_of_layers == 1:
                 input_deck.write('EPAISSEUR_VIDE=100e-6\n')
@@ -503,7 +501,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             input_deck.write('\n')
 
             input_deck.write('NOM_MILIEU=%s_abl2\n' % (ESTHER_MATERIAL_DICT[self.ablator]["shortname"])) # 2nd PART OF ABLATOR
-            input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.ablator]["eos_name"])) # ABLATOR EOS
+            input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.ablator][self.eos_type])) # ABLATOR EOS
             input_deck.write('EPAISSEUR_MILIEU=%.1fe-6\n' % (self._feather_zone_width)) # Feather thickness
             input_deck.write('EPAISSEUR_INTERNE=%.3fe-6\n' % (self._final_feather_zone_width)) # Feather final zone width
             input_deck.write('EPAISSEUR_EXTERNE=4.0e-10\n') #Min zone width
@@ -761,6 +759,15 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
     def delta_time(self,value):
         """ Set simulation time resolution delta t, ns"""
         self.__delta_time = checkAndSetDeltaTime(value)
+
+    @property
+    def eos_type(self):
+        """ Query for eos_type (sesame or blf) """
+        return self.__eos_type
+    @eos_type.setter
+    def eos_type(self,value):
+        """ Set eos_type"""
+        self.__eos_type = checkAndSetEosType(value)
 
     def _setDefaults(self):
         """ Method to pick sensible defaults for all parameters. """
@@ -1139,3 +1146,27 @@ def checkAndSetDeltaTime(delta_time):
         raise ValueError( "Simulation delta time should be > 10 ps and < 500 ps")
 
     return delta_time
+
+def checkAndSetEosType(eos_type):
+    """
+    Utility for choosing the EOS to use for simulation
+    """
+    
+    if eos_type is None: # Set to default EOS (sesame)
+        print "EOS type not defined, using default eos (sesame)"
+        eos_type = "sesame"
+        return eos_type
+    
+    eos_choices = ["sesame", "blf"]
+    
+    # Check if str.
+    if not isinstance(eos_type, str):
+        raise TypeError("The parameter 'eos_type' must be a str (sesame or blf)")
+
+    # Check if EOS type is allowed
+    if eos_type in eos_choices:
+        pass
+    else:
+        raise ValueError( "EOS must be either sesame or blf only")
+    
+    return eos_type
