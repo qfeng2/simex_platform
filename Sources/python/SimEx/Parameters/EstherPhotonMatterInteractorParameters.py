@@ -31,6 +31,7 @@ from SimEx.Parameters.AbstractCalculatorParameters import AbstractCalculatorPara
 ESTHER_MATERIAL_DICT = { "Aluminium" : {"name" : "Aluminium",
                        "shortname" : "Al#",
                        "eos_name" : "Al#_e_ses",
+                       "blf_eos" : "Al#_BLF",
                        "mass_density" : 2.7,
                        },
                        "CH" : {"name" : "CH",
@@ -51,26 +52,31 @@ ESTHER_MATERIAL_DICT = { "Aluminium" : {"name" : "Aluminium",
                        "Molybdenum" : {"name" : "Mo",
                        "shortname" : "Mo#",
                        "eos_name" : "Mo#_e_ses",
+                       "blf_eos" : "Mo#_BLF",
                        "mass_density" : 10.2,
                        },
                        "Gold" : {"name" : "Gold",
                        "shortname" : "Au#",
                        "eos_name" : "Au#_e_ses",
+                       "blf_eos" : "Au#_BLF",
                        "mass_density" : 19.3,
                        },
                        "Iron" : {"name" : "Iron",
                        "shortname" : "Fe#",
                        "eos_name" : "Fe#_e_ses",
+                       "blf_eos" : "Fe#_BLF",
                        "mass_density" : 7.85,
                        },
                        "Copper" : {"name" : "Copper",
                        "shortname" : "Cu#",
                        "eos_name" : "Cu#_e_ses",
+                       "blf_eos" : "Cu#_BLF",
                        "mass_density" : 8.93,
                        },
                        "Tin" : {"name" : "Tin",
                        "shortname" : "Sn#",
                        "eos_name" : "Sn#_e_ses",
+                       "blf_eos" : "Sn#_BLF",
                        "mass_density" : 7.31,
                        },
                        "LiF" : {"name" : "Lithium Fluoride",
@@ -81,21 +87,25 @@ ESTHER_MATERIAL_DICT = { "Aluminium" : {"name" : "Aluminium",
                        "Titanium" : {"name" : "Titanium",
                        "shortname" : "Ti#",
                        "eos_name" : "Ti#_e_ses",
+                       "blf_eos" : "Ti#_BLF",
                        "mass_density" : 4.43,
                        },
                        "Berylium" : {"name" : "Berylium",
                        "shortname" : "Be#",
                        "eos_name" : "Be#_e_ses",
+                       "blf_eos" : "Be#_BLF",
                        "mass_density" : 1.85,
                        },
                        "Cobalt" : {"name" : "Cobalt",
                        "shortname" : "Co#",
                        "eos_name" : "Co#_e_ses",
+                       "blf_eos" : "Co#_BLF",
                        "mass_density" : 8.9,
                        },
                        "Chromium" : {"name" : "Chromium",
                        "shortname" : "Cr#",
                        "eos_name" : "Cr#_e_ses",
+                       "blf_eos" : "Cr#_BLF",
                        "mass_density" : 7.19,
                        },
                        "Iron2" : {"name" : "Iron2",
@@ -111,6 +121,7 @@ ESTHER_MATERIAL_DICT = { "Aluminium" : {"name" : "Aluminium",
                        "Magnesium" : {"name" : "Magnesium",
                        "shortname" : "Mg#",
                        "eos_name" : "Mg#_e_ses",
+                       "blf_eos" : "Mg#_BLF",
                        "mass_density" : 1.74,
                        },
                        "Mylar" : {"name" : "Mylar",
@@ -121,11 +132,13 @@ ESTHER_MATERIAL_DICT = { "Aluminium" : {"name" : "Aluminium",
                        "Nickel" : {"name" : "Nickel",
                        "shortname" : "Ni#",
                        "eos_name" : "Ni#_e_ses",
+                       "blf_eos" : "Ni#_BLF",
                        "mass_density" : 8.9,
                        },
                        "Lead" : {"name" : "Lead",
                        "shortname" : "Pb#",
                        "eos_name" : "Pb#_e_ses",
+                       "blf_eos" : "Pb#_BLF",
                        "mass_density" : 11.35,
                        },
                        "Quartz" : {"name" : "Quartz",
@@ -143,24 +156,22 @@ ESTHER_MATERIAL_DICT = { "Aluminium" : {"name" : "Aluminium",
                        "eos_name" : "SiO_e_ses",
                        "mass_density" : 2.65,
                        },
-                       "Titanium" : {"name" : "Titanium",
-                       "shortname" : "Ti#",
-                       "eos_name" : "Ti#_e_ses",
-                       "mass_density" : 4.54,
-                       },
                        "Vanadium" : {"name" : "Vanadium",
-                       "shortname" : "Va#",
-                       "eos_name" : "Va#_e_ses",
+                       "shortname" : "V##",
+                       "eos_name" : "V##_e_ses",
+                       "blf_eos" : "V##_BLF",
                        "mass_density" : 6.11,
                        },
                        "Tungsten" : {"name" : "Tungsten",
                        "shortname" : "W##",
                        "eos_name" : "W##_e_ses",
+                       "blf_eos" : "W##_BLF",
                        "mass_density" : 19.35,
                        },
                        "Silver" : {"name" : "Silver",
                        "shortname" : "Ag#",
                        "eos_name" : "Ag#_e_ses",
+                       "blf_eos" : "Ag#_BLF",
                        "mass_density" : 10.5,
                        },
            }
@@ -188,9 +199,9 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
                  run_time=None,
                  delta_time=None,
                  read_from_file=None,
-                 force_passage=None,
                  without_therm_conduc=None,
                  rad_transfer=None,
+                 eos_type=None,
                  ):
 
         """
@@ -246,6 +257,9 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
 
         :param rad_transfer: Expert option to use radiative transfer
         :type rad_transfer: boolean
+        
+        :param eos_type: Choice of EOS, default = sesame, some elements can use blf.
+        :type eos_type: str
 
         """
 
@@ -272,7 +286,9 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
                     'laser_pulse_duration':laser_pulse_duration,
                     'laser_intensity':laser_intensity,
                     'run_time':run_time,
-                    'delta_time':delta_time}.items():
+                    'delta_time':delta_time,
+                    'eos_type':eos_type
+                    }.items():
                 if val is not None:
                     setattr(self, key, val)
         else:
@@ -295,7 +311,6 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             self.__run_time = checkAndSetRunTime(run_time)
             self.__delta_time = checkAndSetDeltaTime(delta_time)
 
-            self.force_passage = force_passage
             self.without_therm_conduc = without_therm_conduc
             self.rad_transfer = rad_transfer
         self.checkConsistency()
@@ -324,7 +339,6 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
     def _setDemmargeFlags(self):
         # Expert users options to include in the start up options
         self.__use_usi = "USI" # Use SI units.
-        self.__use_force_passage = "FORCER_LE_PASSAGE" # Forces simulation through ignoring minor issues
         self.__use_without_therm_conduc = "SANS_COND_THERMIQUE" # Run without thermal conducivity
         self.__use_radiative_transfer = "TRANSFERT_RADIATIF" # Run with radiative transfer
 
@@ -414,9 +428,6 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
         # Write the file.
         with open(input_deck_path, 'w') as input_deck:
             input_deck.write('DEMARRAGE,%s\n' % (self.__use_usi))
-
-            if self.force_passage is True:
-                input_deck.write('%s\n' % (self.__use_force_passage)) # Use force passage
 
             if self.without_therm_conduc is True:
                 input_deck.write('%s\n' % (self.__use_without_therm_conduc)) # Use without thermal conductivity option
@@ -765,7 +776,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
 ###########################
 
 #################################
-# Material check and set functions
+# Ablator, layers and sample set functions
 ##################################
 
 def checkAndSetNumberOfLayers(number_of_layers):
