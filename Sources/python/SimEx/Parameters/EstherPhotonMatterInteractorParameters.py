@@ -784,14 +784,15 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
                 raise ValueError( "Window thickness cannot be 0.0")
         
         # If BLF choice, check if the sample actually has a blf eos.
-        blf_elements = [ "Aluminium", "Gold", "Cobalt", "Copper",
-                "Iron", "Molybdenum", "Nickel", "Lead", "Tin",
-                "Berylium", "Chromium", "Magnesium",
-                "Silver", "Titanium", "Vanadium", "Tungsten" ]
-        if self.sample in blf_elements:
-            pass
-        else:
-            raise RuntimeError("Sample does not have blf EOS... set sample_eos_type to None for default eos")
+        if self.sample_eos_type is "blf":
+            blf_elements = [ "Aluminium", "Gold", "Cobalt", "Copper",
+                    "Iron", "Molybdenum", "Nickel", "Lead", "Tin",
+                    "Berylium", "Chromium", "Magnesium",
+                    "Silver", "Titanium", "Vanadium", "Tungsten" ]
+            if self.sample in blf_elements:
+                pass
+            else:
+                raise RuntimeError("Sample does not have blf EOS... set sample_eos_type to None for default eos")
 
 ###########################
 # Check and set functions #
