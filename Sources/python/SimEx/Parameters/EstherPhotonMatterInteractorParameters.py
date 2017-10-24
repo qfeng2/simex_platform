@@ -287,7 +287,9 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
                     'laser_intensity':laser_intensity,
                     'run_time':run_time,
                     'delta_time':delta_time,
-                    'sample_eos_type':sample_eos_type
+                    'sample_eos_type':sample_eos_type,
+                    'without_therm_conduc':without_therm_conduc,
+                    'rad_transfer':rad_transfer
                     }.items():
                 if val is not None:
                     setattr(self, key, val)
@@ -419,6 +421,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
 
         # Write json file of this parameter class instance.
         json_path = os.path.join( self._esther_files_path, 'parameters.json')
+        print ("Writing parameters file to ", self._esther_files_path, 'parameters.json')
         with open( json_path, 'w') as j:
             json.dump( self.__dict__, j)
             j.close()
@@ -1184,8 +1187,5 @@ def checkAndSetSampleEosType(sample_eos_type):
         pass
     else:
         raise ValueError( "EOS must be either sesame or blf only")
-    
-
-
     
     return sample_eos_type
