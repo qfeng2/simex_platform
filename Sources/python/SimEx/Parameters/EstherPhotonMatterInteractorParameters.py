@@ -1160,7 +1160,7 @@ def checkAndSetSampleEosType(sample_eos_type):
     if sample_eos_type is None: # Set to default EOS (sesame)
         print "EOS type not defined, using default eos (sesame)"
         sample_eos_type = "sesame"
-        return eos_type
+        return sample_eos_type
     
     eos_choices = ["sesame", "blf"]
     
@@ -1173,6 +1173,5 @@ def checkAndSetSampleEosType(sample_eos_type):
         pass
     else:
         raise ValueError( "EOS must be either sesame or blf only")
-    
     
     return sample_eos_type
