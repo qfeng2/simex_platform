@@ -201,7 +201,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
                  read_from_file=None,
                  without_therm_conduc=None,
                  rad_transfer=None,
-                 eos_type=None,
+                 sample_eos_type=None,
                  ):
 
         """
@@ -258,8 +258,8 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
         :param rad_transfer: Expert option to use radiative transfer
         :type rad_transfer: boolean
         
-        :param eos_type: Choice of EOS, default = sesame, some elements can use blf.
-        :type eos_type: str
+        :param sample_eos_type: Choice of EOS, default = sesame, some elements can use blf.
+        :type sample_eos_type: str
 
         """
 
@@ -287,7 +287,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
                     'laser_intensity':laser_intensity,
                     'run_time':run_time,
                     'delta_time':delta_time,
-                    'eos_type':eos_type
+                    'sample_eos_type':sample_eos_type
                     }.items():
                 if val is not None:
                     setattr(self, key, val)
@@ -310,7 +310,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             self.__laser_intensity = checkAndSetLaserIntensity(laser_intensity)
             self.__run_time = checkAndSetRunTime(run_time)
             self.__delta_time = checkAndSetDeltaTime(delta_time)
-            self.__eos_type = checkAndSetEosType(eos_type)
+            self.__sample_eos_type = checkAndSetEosType(eos_type)
             self.without_therm_conduc = without_therm_conduc
             self.rad_transfer = rad_transfer
         self.checkConsistency()
@@ -441,7 +441,8 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             if self.window is not None:
                 input_deck.write('- %.1f um %s layer\n' % (self.window_thickness, self.window))
                 input_deck.write('NOM_MILIEU=%s\n' % (ESTHER_MATERIAL_DICT[self.window]["shortname"]))
-                input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.window][self.eos_type]))
+                # Window EOS set to default of SESAME; Add window_eos_choice if other eos become available.
+                input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.window]["sesame"]))
                 input_deck.write('EPAISSEUR_VIDE=100e-6\n')
                 input_deck.write('EPAISSEUR_MILIEU=%.1fe-6\n' % (self.window_thickness))
                 # Calculate number of zones in window
@@ -453,7 +454,8 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             if self.number_of_layers == 4:
                 input_deck.write('- %.1f um %s layer\n' % (self.layer2_thickness, self.layer2))
                 input_deck.write('NOM_MILIEU=%s_2\n' % (ESTHER_MATERIAL_DICT[self.layer2]["shortname"]))
-                input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.layer2][self.eos_type]))
+                # Layer 2 EOS set to default value of SESAME; Add layer2_eos_type if other EOS choices wanted.
+                input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.layer2]["sesame"]))
                 if self.window is None:
                     input_deck.write('EPAISSEUR_VIDE=100e-6\n')
                 input_deck.write('EPAISSEUR_MILIEU=%.1fe-6\n' % (self.layer2_thickness))
@@ -465,7 +467,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             # Write sample layer
             input_deck.write('- %.1f um %s layer\n' % (self.sample_thickness, self.sample))
             input_deck.write('NOM_MILIEU=%s_2\n' % (ESTHER_MATERIAL_DICT[self.sample]["shortname"]))
-            input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.sample][self.eos_type]))
+            input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.sample][self.sample_eos_type]))
             if self.number_of_layers == 3: # Add empty space if number of layers = 3 (abl, lay1, sample)
                 if self.window is None: # But only if there is no window.
                     input_deck.write('EPAISSEUR_VIDE=100e-6\n')
@@ -482,7 +484,8 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             if self.number_of_layers == 3:
                 input_deck.write('- %.1f um %s layer\n' % (self.layer1_thickness, self.layer1))
                 input_deck.write('NOM_MILIEU=%s_2\n' % (ESTHER_MATERIAL_DICT[self.layer1]["shortname"]))
-                input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.layer1][self.eos_type]))
+                # Layer1 EOS set to default value of SESAME: Add layer1_eos_type if other EOS choices wanted.
+                input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.layer1]["sesame"]))
                 # Calculate number of zones
                 input_deck.write('NOMBRE_MAILLES=%d\n' % (self.__number_of_layer1_zones))
                 input_deck.write('MECANIQUE_RAM\n')
@@ -491,7 +494,8 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             # Write ablator layer
             input_deck.write('- %.1f um %s layer\n' % (self.ablator_thickness, self.ablator))
             input_deck.write('NOM_MILIEU=%s_abl1\n' % (ESTHER_MATERIAL_DICT[self.ablator]["shortname"])) # 1st PART OF ABLATOR
-            input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.ablator][self.eos_type]))# ABLATOR EOS
+            # Ablator EOS default to sesame (not many ablators have blf); Add ablator_eos_type if wanted.
+            input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.ablator]["sesame"]))
             # if only simulating ablator layer, then must include empty (VIDE) layer
             if self.number_of_layers == 1:
                 input_deck.write('EPAISSEUR_VIDE=100e-6\n')
@@ -501,7 +505,8 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             input_deck.write('\n')
 
             input_deck.write('NOM_MILIEU=%s_abl2\n' % (ESTHER_MATERIAL_DICT[self.ablator]["shortname"])) # 2nd PART OF ABLATOR
-            input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.ablator][self.eos_type])) # ABLATOR EOS
+            # Ablator EOS default to sesame (not many ablators have blf); Add ablator_eos_type if wanted.
+            input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.ablator]["sesame"])) # ABLATOR EOS
             input_deck.write('EPAISSEUR_MILIEU=%.1fe-6\n' % (self._feather_zone_width)) # Feather thickness
             input_deck.write('EPAISSEUR_INTERNE=%.3fe-6\n' % (self._final_feather_zone_width)) # Feather final zone width
             input_deck.write('EPAISSEUR_EXTERNE=4.0e-10\n') #Min zone width
@@ -761,13 +766,13 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
         self.__delta_time = checkAndSetDeltaTime(value)
 
     @property
-    def eos_type(self):
-        """ Query for eos_type (sesame or blf) """
-        return self.__eos_type
-    @eos_type.setter
-    def eos_type(self,value):
-        """ Set eos_type"""
-        self.__eos_type = checkAndSetEosType(value)
+    def sample_eos_type(self):
+        """ Query for sample_eos_type (sesame or blf) """
+        return self.__sample_eos_type
+    @sample_eos_type.setter
+    def sample_eos_type(self,value):
+        """ Set sample_eos_type"""
+        self.__sample_eos_type = checkAndSetSampleEosType(value)
 
     def _setDefaults(self):
         """ Method to pick sensible defaults for all parameters. """
@@ -1147,26 +1152,27 @@ def checkAndSetDeltaTime(delta_time):
 
     return delta_time
 
-def checkAndSetEosType(eos_type):
+def checkAndSetSampleEosType(sample_eos_type):
     """
     Utility for choosing the EOS to use for simulation
     """
     
-    if eos_type is None: # Set to default EOS (sesame)
+    if sample_eos_type is None: # Set to default EOS (sesame)
         print "EOS type not defined, using default eos (sesame)"
-        eos_type = "sesame"
+        sample_eos_type = "sesame"
         return eos_type
     
     eos_choices = ["sesame", "blf"]
     
     # Check if str.
-    if not isinstance(eos_type, str):
-        raise TypeError("The parameter 'eos_type' must be a str (sesame or blf)")
+    if not isinstance(sample_eos_type, str):
+        raise TypeError("The parameter 'sample_eos_type' must be a str (sesame or blf)")
 
     # Check if EOS type is allowed
-    if eos_type in eos_choices:
+    if sample_eos_type in eos_choices:
         pass
     else:
         raise ValueError( "EOS must be either sesame or blf only")
     
-    return eos_type
+    
+    return sample_eos_type
