@@ -493,9 +493,20 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             input_deck.write('MECANIQUE_RAM\n') # Needs to be an option to use this.
             input_deck.write('\n')
 
-            # TO DO: GIT ISSUE #96: Expert mode
-            # Internal parameters to add to input flags
-            input_deck.write('INDICE_REEL_LASER=1.46\n')
+            # Adjust refractive index for appropriate ablator
+            if self.ablator is "CH":
+                input_deck.write('INDICE_REEL_LASER=1.46\n')
+            elif self.ablator is "Al":
+                input_deck.write('INDICE_REEL_LASER=1.197\n')
+            elif self.ablator is "Dia":
+                input_deck.write('INDICE_REEL_LASER=2.39\n')
+            elif self.ablator is "Myl":
+                input_deck.write('INDICE_REEL_LASER=1.65\n')
+            elif self.ablator is "kapton":
+                input_deck.write('INDICE_REEL_LASER=1.7\n')
+            else:
+                # Use generic refractive index for typical ablators
+                input_deck.write('INDICE_REEL_LASER=1.6\n')
             input_deck.write('INDICE_IMAG_LASER=1.0\n')
             input_deck.write('\n')
 
@@ -778,6 +789,9 @@ def checkAndSetAblator(ablator):
     :param ablator: The ablator material to check.
     :return: The ablator choice after being checked.
     :raise ValueError: ablator not in ["CH", "Al", "Diamond", "Mylar", "Kapton"].
+    
+    If new ablators are added, the refractive index must be updated in the _serialize function
+    to account for the new material, otherwise a default value of 1.6 is used.
 
     """
 
