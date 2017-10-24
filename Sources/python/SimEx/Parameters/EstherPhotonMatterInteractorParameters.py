@@ -458,7 +458,10 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             input_deck.write('NOM_MILIEU=%s_2\n' % (ESTHER_MATERIAL_DICT[self.sample]["shortname"]))
             input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.sample]["eos_name"]))
             if self.number_of_layers == 3: # Add empty space if number of layers = 3 (abl, lay1, sample)
-                if self.window is None:
+                if self.window is None: # But only if there is no window.
+                    input_deck.write('EPAISSEUR_VIDE=100e-6\n')
+            elif self.number_of_layers == 2: # Add empty space if number of layers = 2 (abl, sample)
+                if self.window is None: # But only if there is no window.
                     input_deck.write('EPAISSEUR_VIDE=100e-6\n')
             input_deck.write('EPAISSEUR_MILIEU=%.1fe-6\n' % (self.sample_thickness))
             # Calculate number of zones
