@@ -313,8 +313,10 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             self.__run_time = checkAndSetRunTime(run_time)
             self.__delta_time = checkAndSetDeltaTime(delta_time)
             self.__sample_eos_type = checkAndSetSampleEosType(sample_eos_type)
-            self.without_therm_conduc = without_therm_conduc
-            self.rad_transfer = rad_transfer
+            self.without_therm_conduc = without_therm_conduc # NEEDS CHECK AND SET
+            self.rad_transfer = rad_transfer # NEEDS CHECK AND SET
+        
+        # Check possible conflicts of checkAndSet functions
         self.checkConsistency()
 
         # Define start up options (called Demmarage in esther)
@@ -339,6 +341,8 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
     def _setDemmargeFlags(self):
         # Expert users options to include in the start up options
         self.__use_usi = "USI" # Use SI units.
+        
+        # These two are now in the parameters as without_therm_conduc and rad_transfer...
         self.__use_without_therm_conduc = "SANS_COND_THERMIQUE" # Run without thermal conducivity
         self.__use_radiative_transfer = "TRANSFERT_RADIATIF" # Run with radiative transfer
 
