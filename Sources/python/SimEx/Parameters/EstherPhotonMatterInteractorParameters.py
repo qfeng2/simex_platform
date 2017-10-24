@@ -421,7 +421,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
 
         # Write json file of this parameter class instance.
         json_path = os.path.join( self._esther_files_path, 'parameters.json')
-        print ("Writing parameters file to ", self._esther_files_path, 'parameters.json')
+        print ("Writing parameters file to ", json_path, ".")
         with open( json_path, 'w') as j:
             json.dump( self.__dict__, j)
             j.close()
