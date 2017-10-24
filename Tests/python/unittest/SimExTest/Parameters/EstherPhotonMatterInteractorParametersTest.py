@@ -252,7 +252,23 @@ class EstherPhotonMatterInteractorParametersTest(unittest.TestCase):
         """ Test the serialization of parameters into input deck."""
 
         # Setup parameters object.
-        esther_parameters = self.esther_parameters
+        esther_parameters = EstherPhotonMatterInteractorParameters(
+                                         number_of_layers=3,
+                                         ablator="CH",
+                                         ablator_thickness=25.0,
+                                         sample="Iron",
+                                         sample_thickness=5.0,
+                                         window="LiF",
+                                         window_thickness=50.0,
+                                         layer1="Copper",
+                                         layer1_thickness=1.0,
+                                         laser_wavelength=1064.0,
+                                         laser_pulse='quasiflat',
+                                         laser_pulse_duration=6.0,
+                                         laser_intensity=0.1,
+                                         run_time=10.0,
+                                         delta_time=0.05,
+                                                         )
 
         esther_parameters._serialize()
 
