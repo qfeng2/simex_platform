@@ -782,6 +782,16 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
         if self.window is not None:
             if self.window_thickness == 0.0:
                 raise ValueError( "Window thickness cannot be 0.0")
+        
+        # If BLF choice, check if the sample actually has a blf eos.
+        blf_elements = [ "Aluminium", "Gold", "Cobalt", "Copper",
+                "Iron", "Molybdenum", "Nickel", "Lead", "Tin",
+                "Berylium", "Chromium", "Magnesium",
+                "Silver", "Titanium", "Vanadium", "Tungsten" ]
+        if self.sample in blf_elements:
+            pass
+        else:
+            raise RuntimeError("Sample does not have blf EOS... set sample_eos_type to None for default eos")
 
 ###########################
 # Check and set functions #
@@ -879,7 +889,7 @@ def checkAndSetSample(sample):
     elements = [ "Aluminium", "Gold", "Carbon", "CH", "Cobalt", "Copper", "Diamond",
                 "Iron", "Molybdenum", "Nickel", "Lead", "Silicon", "Tin", "Tantalum",
                 "Berylium", "Chromium", "Iron2", "Kapton", "LiF", "Magnesium", "Mylar",
-                "Quartz", "SiliconOxide", "Silver", "Titanium", "Vanadium", "Water" ]
+                "Quartz", "SiliconOxide", "Silver", "Titanium", "Vanadium", "Water", "Tungsten" ]
 
     # Set default
     if sample is None:
@@ -922,7 +932,7 @@ def checkAndSetLayer1(layer1):
     elements = [ "Aluminium", "Gold", "Carbon", "CH", "Cobalt", "Copper", "Diamond",
                 "Iron", "Molybdenum", "Nickel", "Lead", "Silicon", "Tin", "Tantalum",
                 "Berylium", "Chromium", "Iron2", "Kapton", "LiF", "Magnesium", "Mylar",
-                "Quartz", "SiliconOxide", "Silver", "Titanium", "Vanadium", "Water" ]
+                "Quartz", "SiliconOxide", "Silver", "Titanium", "Vanadium", "Water", "Tungsten" ]
 
     # Set default
     if layer1 is None:
@@ -1173,5 +1183,8 @@ def checkAndSetSampleEosType(sample_eos_type):
         pass
     else:
         raise ValueError( "EOS must be either sesame or blf only")
+    
+
+
     
     return sample_eos_type
