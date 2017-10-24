@@ -500,16 +500,17 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             input_deck.write('\n')
 
             # Laser parameters
-            # TO DO: GIT ISSUE #96: Expert mode
             input_deck.write('DEPOT_ENERGIE,LASER,DEPOT_HELMHOLTZ\n') # Expert mode option
             input_deck.write('LONGUEUR_ONDE_LASER=%.3fe-6\n' % (self.laser_wavelength))
             input_deck.write('DUREE_IMPULSION=%.2fe-9\n' % (self.laser_pulse_duration))
             input_deck.write('INTENSITE_IMPUL_MAX=%.3fe16\n' % (self.laser_intensity))
-            input_deck.write('TEMPS_IMPUL_TABULE=0.0e-9,INTENSITE_TABULEE=0.\n') # These need to change for approrpriate laser designs.
-            input_deck.write('TEMPS_IMPUL_TABULE=0.2e-9,INTENSITE_TABULEE=1\n')
-            input_deck.write('TEMPS_IMPUL_TABULE=5.8e-9,INTENSITE_TABULEE=1\n')
-            input_deck.write('TEMPS_IMPUL_TABULE=6.0e-9,INTENSITE_TABULEE=0.\n')
-            #input_deck.write('IMPULSION_FICHIER\n')
+            if self.laser_pulse is "flat":        
+                input_deck.write('TEMPS_IMPUL_TABULE=0.0e-9,INTENSITE_TABULEE=0.\n') # These need to change for approrpriate laser designs.
+                input_deck.write('TEMPS_IMPUL_TABULE=0.2e-9,INTENSITE_TABULEE=1\n')
+                input_deck.write('TEMPS_IMPUL_TABULE=%.1e-9,INTENSITE_TABULEE=1\n'% (self.laser_pulse_duration-0.2))
+                input_deck.write('TEMPS_IMPUL_TABULE=%.1fe-9,INTENSITE_TABULEE=0.\n' % (self.laser_pulse_duration))
+            else:
+                raise RuntimeError("Laser pulse type has not been chosen")
             input_deck.write('\n')
 
             # Output parameters
