@@ -521,8 +521,8 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
                 Number_lines = len(x)
                 x[Number_lines-1]=self.laser_pulse_duration-0.1 # Set the max intensity at 100 ps before final pulse time
                 for i in range(0,Number_lines):
-                    laser_input_deck.write('TEMPS_IMPUL_TABULE=%.1fe-9\t%0.3f\n' % (x[i],y[i]*self.laser_intensity))
-                laser_input_deck.write('TEMPS_IMPUL_TABULE=%.1fe-9\t0.0\n' % (self.laser_pulse_duration))
+                    input_deck.write('TEMPS_IMPUL_TABULE=%.1fe-9\t%0.3f\n' % (x[i],y[i]*self.laser_intensity))
+                input_deck.write('TEMPS_IMPUL_TABULE=%.1fe-9\t0.0\n' % (self.laser_pulse_duration))
             else:
                 raise RuntimeError("Laser pulse type has not been chosen")
             input_deck.write('\n')
@@ -552,6 +552,14 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
                 laser_input_deck.write('temps (s ou u.a.) intensite (W/m2 ou u.a.)\n')
                 laser_input_deck.write('0. \t 0\n')
                 laser_input_deck.write('0.1e-9\t%.3f\n' % (self.laser_intensity))
+                laser_input_deck.write('%.1fe-9\t%.3f\n' % (self.laser_pulse_duration-0.2, self.laser_intensity))
+                laser_input_deck.write('%.1fe-9\t0.0\n' % (self.laser_pulse_duration))
+                laser_input_deck.write('fin_de_fichier')
+            elif self.laser_pulse == "quasiflat":
+                laser_input_deck.write('4\n')
+                laser_input_deck.write('temps (s ou u.a.) intensite (W/m2 ou u.a.)\n')
+                laser_input_deck.write('0. \t 0\n')
+                laser_input_deck.write('0.1e-9\t%.3f\n' % (0.8*self.laser_intensity))
                 laser_input_deck.write('%.1fe-9\t%.3f\n' % (self.laser_pulse_duration-0.2, self.laser_intensity))
                 laser_input_deck.write('%.1fe-9\t0.0\n' % (self.laser_pulse_duration))
                 laser_input_deck.write('fin_de_fichier')
