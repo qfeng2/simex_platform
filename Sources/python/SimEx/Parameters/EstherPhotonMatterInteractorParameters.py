@@ -470,7 +470,8 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
                 input_deck.write('- %.1f um %s layer\n' % (self.layer1_thickness, self.layer1))
                 input_deck.write('NOM_MILIEU=%s_2\n' % (ESTHER_MATERIAL_DICT[self.layer1]["shortname"]))
                 input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.layer1]["eos_name"]))
-                input_deck.write('EPAISSEUR_MILIEU=%.1fe-6\n' % (self.layer1_thickness))
+                if self.window is None:
+                    input_deck.write('EPAISSEUR_MILIEU=%.1fe-6\n' % (self.layer1_thickness))
                 # Calculate number of zones
                 input_deck.write('NOMBRE_MAILLES=%d\n' % (self.__number_of_layer1_zones))
                 input_deck.write('MECANIQUE_RAM\n')
