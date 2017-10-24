@@ -310,7 +310,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             self.__laser_intensity = checkAndSetLaserIntensity(laser_intensity)
             self.__run_time = checkAndSetRunTime(run_time)
             self.__delta_time = checkAndSetDeltaTime(delta_time)
-            self.__sample_eos_type = checkAndSetEosType(eos_type)
+            self.__sample_eos_type = checkAndSetSampleEosType(sample_eos_type)
             self.without_therm_conduc = without_therm_conduc
             self.rad_transfer = rad_transfer
         self.checkConsistency()
