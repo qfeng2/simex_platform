@@ -521,8 +521,8 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
                 Number_lines = len(x)
                 x[Number_lines-1]=self.laser_pulse_duration-0.1 # Set the max intensity at 100 ps before final pulse time
                 for i in range(0,Number_lines):
-                    input_deck.write('TEMPS_IMPUL_TABULE=%.1fe-9\t%0.3f\n' % (x[i],y[i]*self.laser_intensity))
-                input_deck.write('TEMPS_IMPUL_TABULE=%.1fe-9\t0.0\n' % (self.laser_pulse_duration))
+                    input_deck.write('TEMPS_IMPUL_TABULE=%.1fe-9,INTENSITE_TABULEE=%0.3f\n' % (x[i],y[i]))
+                input_deck.write('TEMPS_IMPUL_TABULE=%.1fe-9,INTENSITE_TABULEE=0.0\n' % (self.laser_pulse_duration))
             else:
                 raise RuntimeError("Laser pulse type has not been chosen")
             input_deck.write('\n')
