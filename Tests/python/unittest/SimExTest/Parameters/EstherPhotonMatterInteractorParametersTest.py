@@ -76,7 +76,7 @@ class EstherPhotonMatterInteractorParametersTest(unittest.TestCase):
                                          laser_intensity=0.1,
                                          run_time=10.0,
                                          delta_time=0.05,
-                                                         )
+                                         sample_eos_type="sesame")
 
     def tearDown(self):
         """ Tearing down a test. """
@@ -253,21 +253,24 @@ class EstherPhotonMatterInteractorParametersTest(unittest.TestCase):
 
         # Setup parameters object.
         esther_parameters = EstherPhotonMatterInteractorParameters(
-                                         number_of_layers=3,
-                                         ablator="CH",
-                                         ablator_thickness=25.0,
+                                         number_of_layers=4,
+                                         ablator="Kapton",
+                                         ablator_thickness=50.0,
                                          sample="Iron",
                                          sample_thickness=5.0,
                                          window="LiF",
                                          window_thickness=50.0,
                                          layer1="Copper",
                                          layer1_thickness=1.0,
+                                         layer2="Copper",
+                                         layer2_thickness=1.0,
                                          laser_wavelength=1064.0,
                                          laser_pulse='quasiflat',
                                          laser_pulse_duration=6.0,
                                          laser_intensity=0.1,
                                          run_time=10.0,
                                          delta_time=0.05,
+                                         sample_eos_type="sesame"
                                                          )
 
         esther_parameters._serialize()
@@ -278,6 +281,12 @@ class EstherPhotonMatterInteractorParametersTest(unittest.TestCase):
         self.assertTrue( 'tmp_input.txt' in os.listdir( esther_parameters._esther_files_path ) )
         self.assertTrue( 'parameters.json' in os.listdir( esther_parameters._esther_files_path ) )
 
+    def testSampleEOS(self):
+        """ Testing if the eos_type = sesame or blf works correctly """
+        esther_parameters = self.esther_paramaters
+        esther_parameters._serialize()
+        
+        
     def testExpert(self):
         """ Testing the expert mode parameters pass """
 
