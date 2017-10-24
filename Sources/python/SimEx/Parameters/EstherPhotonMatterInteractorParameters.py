@@ -440,21 +440,24 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
                 input_deck.write('MECANIQUE_RAM\n')
                 input_deck.write('\n')
 
-            # If using 4 layers (ablator, layer1, sample, layer2)
+            # If using 4 layers (ablator, layer1, sample, layer2) write layer 2
             if self.number_of_layers == 4:
                 input_deck.write('- %.1f um %s layer\n' % (self.layer2_thickness, self.layer2))
                 input_deck.write('NOM_MILIEU=%s_2\n' % (ESTHER_MATERIAL_DICT[self.layer2]["shortname"]))
                 input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.layer2]["eos_name"]))
+                if self.window is None:
+                    input_deck.write('EPAISSEUR_VIDE=100e-6\n')
                 input_deck.write('EPAISSEUR_MILIEU=%.1fe-6\n' % (self.layer2_thickness))
                 # Calculate number of zones
                 input_deck.write('NOMBRE_MAILLES=%d\n' % (self.__number_of_layer2_zones))
                 input_deck.write('MECANIQUE_RAM\n')
                 input_deck.write('\n')
-
+            
+            # Write sample layer
             input_deck.write('- %.1f um %s layer\n' % (self.sample_thickness, self.sample))
             input_deck.write('NOM_MILIEU=%s_2\n' % (ESTHER_MATERIAL_DICT[self.sample]["shortname"]))
             input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.sample]["eos_name"]))
-            if self.window is None:
+            if self.number_of_layers == 3: # Add empty space if number of layers = 3 (abl, lay1, sample)
                 input_deck.write('EPAISSEUR_VIDE=100e-6\n')
             input_deck.write('EPAISSEUR_MILIEU=%.1fe-6\n' % (self.sample_thickness))
             # Calculate number of zones
@@ -462,7 +465,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             input_deck.write('MECANIQUE_RAM\n')
             input_deck.write('\n')
 
-            # If using 3 layers (ablator, layer1, sample)
+            # If using 3 layers (ablator, layer1, sample) write layer 1
             if self.number_of_layers == 3:
                 input_deck.write('- %.1f um %s layer\n' % (self.layer1_thickness, self.layer1))
                 input_deck.write('NOM_MILIEU=%s_2\n' % (ESTHER_MATERIAL_DICT[self.layer1]["shortname"]))
@@ -473,7 +476,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
                 input_deck.write('MECANIQUE_RAM\n')
                 input_deck.write('\n')
 
-            # Write ablator
+            # Write ablator layer
             input_deck.write('- %.1f um %s layer\n' % (self.ablator_thickness, self.ablator))
             input_deck.write('NOM_MILIEU=%s_abl1\n' % (ESTHER_MATERIAL_DICT[self.ablator]["shortname"])) # 1st PART OF ABLATOR
             input_deck.write('EQUATION_ETAT=%s\n' % (ESTHER_MATERIAL_DICT[self.ablator]["eos_name"]))# ABLATOR EOS
@@ -502,7 +505,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
                 input_deck.write('INDICE_REEL_LASER=2.39\n')
             elif self.ablator is "Myl":
                 input_deck.write('INDICE_REEL_LASER=1.65\n')
-            elif self.ablator is "kapton":
+            elif self.ablator is "Kapton":
                 input_deck.write('INDICE_REEL_LASER=1.7\n')
             else:
                 # Use generic refractive index for typical ablators
