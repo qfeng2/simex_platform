@@ -283,7 +283,7 @@ class EstherPhotonMatterInteractorParametersTest(unittest.TestCase):
 
     def testSampleEOS(self):
         """ Testing if the eos_type = sesame or blf works correctly """
-        esther_parameters = self.esther_paramaters
+        esther_parameters = self.esther_parameters
         esther_parameters._serialize()
         
         
