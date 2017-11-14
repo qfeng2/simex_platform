@@ -202,6 +202,9 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
                  without_therm_conduc=None,
                  rad_transfer=None,
                  sample_eos_type=None,
+                 number_of_zones=None,
+                 feather_zone_width=None,
+                 minimum_zone_width=None,
                  ):
 
         """
@@ -260,6 +263,15 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
         
         :param sample_eos_type: Choice of EOS, default = sesame, some elements can use blf.
         :type sample_eos_type: str
+        
+        :param number_of_zones: Expert options, number of zones for mesh (spatial resolution)
+        :type number_of_zones: int
+        
+        :param feather_zone_width: Width of the feathered zone
+        :type feather_zone_width: float
+        
+        :param minimum_zone_width: Minimum width of feathered zone towards laser
+        :type minimum_zone_width: float
 
         """
 
@@ -289,7 +301,10 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
                     'delta_time':delta_time,
                     'sample_eos_type':sample_eos_type,
                     'without_therm_conduc':without_therm_conduc,
-                    'rad_transfer':rad_transfer
+                    'rad_transfer':rad_transfer,
+                    'number_of_zones':number_of_zones,
+                    'feather_zone_width':feather_zone_width,
+                    'minimum_zone_width':minimum_zone_width
                     }.items():
                 if val is not None:
                     setattr(self, key, val)
@@ -313,8 +328,11 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             self.__run_time = checkAndSetRunTime(run_time)
             self.__delta_time = checkAndSetDeltaTime(delta_time)
             self.__sample_eos_type = checkAndSetSampleEosType(sample_eos_type)
-            self.without_therm_conduc = without_therm_conduc # NEEDS CHECK AND SET
-            self.rad_transfer = rad_transfer # NEEDS CHECK AND SET
+            self.without_therm_conduc = without_therm_conduc # NEEDS CHECK AND SET / CONSISTENCY
+            self.rad_transfer = rad_transfer # NEEDS CHECK AND SET / CONSISTENCY
+            self.__number_of_zones = checkAndSetNumberOfZones(number_of_zones)
+            self.__feather_zone_width = checkAndSetFeatherZoneWidth(feather_zone_width)
+            self.__minimum_zone_width = checkAndSetMinimumZoneWidth(minimum_zone_width)
         
         # Check possible conflicts of checkAndSet functions
         self.checkConsistency()
@@ -346,16 +364,16 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
         self.__use_without_therm_conduc = "SANS_COND_THERMIQUE" # Run without thermal conducivity
         self.__use_radiative_transfer = "TRANSFERT_RADIATIF" # Run with radiative transfer
 
-    def _setupFeathering(self, number_of_zones=250, feather_zone_width=4.0, minimum_zone_width=4e-4):
+    def _setupFeathering(self, number_of_zones, feather_zone_width, minimum_zone_width):
         """ Method to fix feathering
 
-        :param number_of_zones: The number of zones in the first ablator section (default 200).
+        :param number_of_zones: The number of zones in the first ablator section (default 250).
         :type number_of_zones: int
 
-        :param feather_zone_width: Width of feather zone (default 5.0 [microns]).
+        :param feather_zone_width: Width of feather zone (default 4.0 [microns]).
         :type feather_zone_width: float
 
-        :param minimum_zone_width: Minimal zone width (default 2e-4 [microns]).
+        :param minimum_zone_width: Minimal zone width (default 4e-4 [microns]).
         :type minimum_zone_width: float
 
         """
@@ -780,7 +798,34 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
     def sample_eos_type(self,value):
         """ Set sample_eos_type"""
         self.__sample_eos_type = checkAndSetSampleEosType(value)
-
+    
+    @property
+    def number_of_zones(self):
+        """ Query for number of zones in mesh """
+        return self.__number_of_zones
+    @number_of_zones.setter
+    def number_of_zones(self,value):
+        """ Set number of zones """
+        self.__number_of_zones = checkAndSetNumberOfZones(value)
+    
+    @property
+    def feather_zone_width(self):
+        """ Query for feather zone width in mesh """
+        return self.__feather_zone_width
+    @feather_zone_width.setter
+    def feather_zone_width(self,value):
+        """ Set number of zones """
+        self.__feather_zone_width = checkAndSetFeatherZoneWidth(value)
+    
+    @property
+    def minimum_zone_width(self):
+        """ Query for minimum zone width """
+        return self.__minimum_zone_width
+    @minimum_zone_width.setter
+    def minimum_zone_width(self,value):
+        """ Set minimum zone width """
+        self.__minimum_zone_width = checkAndSetMinimumZoneWidth(value)
+    
     def _setDefaults(self):
         """ Method to pick sensible defaults for all parameters. """
         pass
@@ -1193,3 +1238,50 @@ def checkAndSetSampleEosType(sample_eos_type):
         raise ValueError( "EOS must be either sesame or blf only")
     
     return sample_eos_type
+
+##################################################################
+# Setup feathering checkAndSet options (Expert mode)
+##################################################################
+
+def checkAndSetNumberOfZones(number_of_zones):
+    """
+    Utility for checking the number of zones is valid
+    """
+    
+    # Set default value to 250
+    if number_of_zones is None:
+        number_of_zones = 250
+    
+    # Make sure  number of zones > 200 and < 1000
+    if number_of_zones < 150 or number_of_zones > 1000:
+        raise ValueError( "Number of zones should be > 150 and < 1000")
+
+    return number_of_zones
+
+def checkAndSetFeatherZoneWidth(feather_zone_width):
+    """
+    Utility for checking the feather zone width is valid
+    """
+    
+    # Set default value to 4.0
+    if feather_zone_width is None:
+        feather_zone_width = 4.0
+    
+    if feather_zone_width < 2.0 or feather_zone_width > 10.0:
+        raise ValueError( "Feather zone width should not be < 2.0 micron or > 10.0 micron")
+
+    return feather_zone_width
+
+def checkAndSetMinimumZoneWidth(minimum_zone_width):
+    """
+    Utility for checking the feather zone width is valid
+    """
+    
+    # Set default value to 4e-4
+    if minimum_zone_width is None:
+        minimum_zone_width = 4e-4
+    
+    if minimum_zone_width < 0.0001 or minimum_zone_width > 0.001:
+        raise ValueError( "Minimum zone width should not be < 1 Angstrom or > 10 Angstrom")
+
+    return minimum_zone_width
