@@ -380,7 +380,6 @@ class EstherPhotonMatterInteractorParametersTest(unittest.TestCase):
         esther_parameters._serialize()
         
         path_to_esther_files = esther_parameters._esther_files_path
-        print path_to_esther_files
         
         # Check default values give correct feathering information - 50 um kapton, 250 zones, 4.0, 4e-4
         self.assertAlmostEqual( esther_parameters._final_feather_zone_width, 0.0878)
@@ -391,10 +390,9 @@ class EstherPhotonMatterInteractorParametersTest(unittest.TestCase):
         new_esther_parameters = EstherPhotonMatterInteractorParameters(
                                          number_of_zones = 500,
                                          read_from_file=path_to_esther_files)
-        new_esther_parameters._serialize()
         
         # Check the new number of zones
-        self.assertEqual( new_esther_parameters.non_feather_zones, 1240)
+        self.assertEqual( new_esther_parameters.number_of_zones, 500)
         
 
 
