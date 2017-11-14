@@ -383,6 +383,16 @@ class EstherPhotonMatterInteractorParametersTest(unittest.TestCase):
         self.assertAlmostEqual( esther_parameters._final_feather_zone_width, 0.0878)
         self.assertAlmostEqual( esther_parameters._mass_of_zone, 0.124676, 5)
         self.assertEqual( esther_parameters._non_feather_zones, 523)
+        
+        # Change values and check the new feather is OK.
+        new_esther_parameters = EstherPhotonMatterInteractorParameters(
+                                         number_of_zones = 500,
+                                         read_from_file=path_to_esther_files)
+        new_esther_parameters._serialize()
+        
+        # Check the new number of zones
+        self.assertEqual( esther_parameters._non_feather_zones, 523)
+        
 
 
 if __name__ == '__main__':
