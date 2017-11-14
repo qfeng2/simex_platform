@@ -341,7 +341,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
         self._setDemmargeFlags()
 
         # Expert mode: Setup zone feathering (spatial resolution)
-        self._setupFeathering()
+        self._setupFeathering(self.__number_of_zones,self.__feather_zone_width, self.__minimum_zone_width)
 
         # Set state to not-initialized (e.g. input deck is not written)
         self.__is_initialized = False
