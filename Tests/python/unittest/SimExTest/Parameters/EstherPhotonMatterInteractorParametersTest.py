@@ -382,7 +382,7 @@ class EstherPhotonMatterInteractorParametersTest(unittest.TestCase):
         # Check default values give correct feathering information - 50 um kapton, 250 zones, 4.0, 4e-4
         self.assertAlmostEqual( esther_parameters._final_feather_zone_width, 0.0878)
         self.assertAlmostEqual( esther_parameters._mass_of_zone, 0.124676, 5)
-        self.assertEqual( esther_parameters._non_feather_zones, 239)
+        self.assertEqual( esther_parameters._non_feather_zones, 523)
 
 
 if __name__ == '__main__':
