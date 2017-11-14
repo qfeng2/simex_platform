@@ -560,17 +560,17 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             input_deck.write('LONGUEUR_ONDE_LASER=%.3fe-6\n' % (self.laser_wavelength))
             input_deck.write('DUREE_IMPULSION=%.2fe-9\n' % (self.laser_pulse_duration))
             input_deck.write('INTENSITE_IMPUL_MAX=%.3fe16\n' % (self.laser_intensity))
-            if self._laser_pulse is "flat":        
+            if self.laser_pulse is "flat":        
                 input_deck.write('TEMPS_IMPUL_TABULE=0.0e-9,INTENSITE_TABULEE=0.0\n') # These need to change for approrpriate laser designs.
                 input_deck.write('TEMPS_IMPUL_TABULE=0.2e-9,INTENSITE_TABULEE=1.0\n')
                 input_deck.write('TEMPS_IMPUL_TABULE=%.1fe-9,INTENSITE_TABULEE=1.0\n'% (self.laser_pulse_duration-0.2))
                 input_deck.write('TEMPS_IMPUL_TABULE=%.1fe-9,INTENSITE_TABULEE=0.0\n' % (self.laser_pulse_duration))
-            elif self._laser_pulse is "quasiflat":
+            elif self.laser_pulse is "quasiflat":
                 input_deck.write('TEMPS_IMPUL_TABULE=0.0e-9,INTENSITE_TABULEE=0.0\n') # These need to change for approrpriate laser designs.
                 input_deck.write('TEMPS_IMPUL_TABULE=0.2e-9,INTENSITE_TABULEE=0.8\n')
                 input_deck.write('TEMPS_IMPUL_TABULE=%.1fe-9,INTENSITE_TABULEE=1.0\n'% (self.laser_pulse_duration-0.2))
                 input_deck.write('TEMPS_IMPUL_TABULE=%.1fe-9,INTENSITE_TABULEE=0.0\n' % (self.laser_pulse_duration))
-            elif self._laser_pulse is "ramp":
+            elif self.laser_pulse is "ramp":
                 x = numpy.arange(0.,self.laser_pulse_duration+1.0,1)
                 y = x**3
                 y = y/numpy.amax(y)
