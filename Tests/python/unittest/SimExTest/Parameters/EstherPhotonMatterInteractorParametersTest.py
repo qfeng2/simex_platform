@@ -351,10 +351,33 @@ class EstherPhotonMatterInteractorParametersTest(unittest.TestCase):
 
     def testSetupFeathering(self):
         """ Test the utility responsible for setting up the feathering. """
-        # Setup parameters object.
-        esther_parameters = self.esther_parameters
+        
+        # Check defaults are OK
+        esther_parameters = EstherPhotonMatterInteractorParameters(
+                                         number_of_layers=4,
+                                         ablator="Kapton",
+                                         ablator_thickness=50.0,
+                                         sample="Iron",
+                                         sample_thickness=5.0,
+                                         window="LiF",
+                                         window_thickness=50.0,
+                                         layer1="Copper",
+                                         layer1_thickness=1.0,
+                                         layer2="Copper",
+                                         layer2_thickness=1.0,
+                                         laser_wavelength=1064.0,
+                                         laser_pulse='quasiflat',
+                                         laser_pulse_duration=6.0,
+                                         laser_intensity=0.1,
+                                         run_time=10.0,
+                                         delta_time=0.05,
+                                         sample_eos_type="sesame",
+                                         number_of_zones=None,
+                                         feather_zone_width=None,
+                                         minimum_zone_width=None,
+                                         )
 
-        esther_parameters._setupFeathering(number_of_zones=250, feather_zone_width=4.0, minimum_zone_width=4e-4)
+        esther_parameters._serialize()
 
         self.assertAlmostEqual( esther_parameters._final_feather_zone_width, 0.0878)
         self.assertAlmostEqual( esther_parameters._mass_of_zone, 0.091662, 5)
