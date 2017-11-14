@@ -394,6 +394,9 @@ class EstherPhotonMatterInteractorParametersTest(unittest.TestCase):
         # Check the new number of zones
         self.assertEqual( new_esther_parameters.number_of_zones, 500)
         
+        esther_parameters = new_esther_parameters
+        esther_parameters._serialize()
+        
 
 
 if __name__ == '__main__':
