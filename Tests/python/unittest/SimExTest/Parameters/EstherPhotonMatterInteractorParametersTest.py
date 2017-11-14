@@ -353,38 +353,15 @@ class EstherPhotonMatterInteractorParametersTest(unittest.TestCase):
         """ Test the utility responsible for setting up the feathering. """
         
         # Check defaults are OK
-        esther_parameters = EstherPhotonMatterInteractorParameters(
-                                         number_of_layers=4,
-                                         ablator="Kapton",
-                                         ablator_thickness=50.0,
-                                         sample="Iron",
-                                         sample_thickness=5.0,
-                                         window="LiF",
-                                         window_thickness=50.0,
-                                         layer1="Copper",
-                                         layer1_thickness=1.0,
-                                         layer2="Copper",
-                                         layer2_thickness=1.0,
-                                         laser_wavelength=1064.0,
-                                         laser_pulse='quasiflat',
-                                         laser_pulse_duration=6.0,
-                                         laser_intensity=0.1,
-                                         run_time=10.0,
-                                         delta_time=0.05,
-                                         sample_eos_type="sesame",
-                                         number_of_zones=None,
-                                         feather_zone_width=None,
-                                         minimum_zone_width=None,
-                                         )
-
+        esther_parameters = self.esther_parameters
         esther_parameters._serialize()
-        
-        path_to_esther_files = esther_parameters._esther_files_path
         
         # Check default values give correct feathering information - 50 um kapton, 250 zones, 4.0, 4e-4
         self.assertAlmostEqual( esther_parameters._final_feather_zone_width, 0.0878)
         self.assertAlmostEqual( esther_parameters._mass_of_zone, 0.124676, 5)
         self.assertEqual( esther_parameters._non_feather_zones, 523)
+        
+        path_to_esther_files = esther_parameters._esther_files_path
         
         # Change values and check the new feather is OK.
         new_esther_parameters = EstherPhotonMatterInteractorParameters(
