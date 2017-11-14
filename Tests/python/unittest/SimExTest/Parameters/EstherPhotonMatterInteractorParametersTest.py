@@ -343,11 +343,11 @@ class EstherPhotonMatterInteractorParametersTest(unittest.TestCase):
         # The function readParametersFromFile needs to set this parameters below from the param.dat file.
         # For now, obtaining the tmp path of esther files is working.
         new_esther_parameters = EstherPhotonMatterInteractorParameters(
-                                         laser_wavelength = 900.0,
+                                         laser_pulse = "quasiflat",
                                          read_from_file=path_to_esther_files)
 
         # Check laser wavelength has been updated.
-        self.assertEqual( new_esther_parameters.laser_wavelength, 0.9 )
+        self.assertEqual( new_esther_parameters.laser_pulse, "quasiflat" )
 
     def testSetupFeathering(self):
         """ Test the utility responsible for setting up the feathering. """
@@ -394,7 +394,7 @@ class EstherPhotonMatterInteractorParametersTest(unittest.TestCase):
         new_esther_parameters._serialize()
         
         # Check the new number of zones
-        self.assertEqual( new_esther_parameters.non_feather_zones, 523)
+        self.assertEqual( new_esther_parameters.non_feather_zones, 1240)
         
 
 
