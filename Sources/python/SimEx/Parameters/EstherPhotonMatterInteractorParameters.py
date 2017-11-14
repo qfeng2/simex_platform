@@ -260,16 +260,16 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
 
         :param rad_transfer: Expert option to use radiative transfer
         :type rad_transfer: boolean
-        
+
         :param sample_eos_type: Choice of EOS, default = sesame, some elements can use blf.
         :type sample_eos_type: str
-        
+
         :param number_of_zones: Expert options, number of zones for mesh (spatial resolution)
         :type number_of_zones: int
-        
+
         :param feather_zone_width: Width of the feathered zone
         :type feather_zone_width: float
-        
+
         :param minimum_zone_width: Minimum width of feathered zone towards laser
         :type minimum_zone_width: float
 
@@ -333,7 +333,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             self.__number_of_zones = checkAndSetNumberOfZones(number_of_zones)
             self.__feather_zone_width = checkAndSetFeatherZoneWidth(feather_zone_width)
             self.__minimum_zone_width = checkAndSetMinimumZoneWidth(minimum_zone_width)
-        
+
         # Check possible conflicts of checkAndSet functions
         self.checkConsistency()
 
@@ -359,7 +359,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
     def _setDemmargeFlags(self):
         # Expert users options to include in the start up options
         self.__use_usi = "USI" # Use SI units.
-        
+
         # These two are now in the parameters as without_therm_conduc and rad_transfer...
         self.__use_without_therm_conduc = "SANS_COND_THERMIQUE" # Run without thermal conducivity
         self.__use_radiative_transfer = "TRANSFERT_RADIATIF" # Run with radiative transfer
@@ -488,7 +488,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
                 input_deck.write('NOMBRE_MAILLES=%d\n' % (self.__number_of_layer2_zones))
                 input_deck.write('MECANIQUE_RAM\n')
                 input_deck.write('\n')
-            
+
             # Write sample layer
             input_deck.write('- %.1f um %s layer\n' % (self.sample_thickness, self.sample))
             input_deck.write('NOM_MILIEU=%s_2\n' % (ESTHER_MATERIAL_DICT[self.sample]["shortname"]))
@@ -560,17 +560,17 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
             input_deck.write('LONGUEUR_ONDE_LASER=%.3fe-6\n' % (self.laser_wavelength))
             input_deck.write('DUREE_IMPULSION=%.2fe-9\n' % (self.laser_pulse_duration))
             input_deck.write('INTENSITE_IMPUL_MAX=%.3fe16\n' % (self.laser_intensity))
-            if self.laser_pulse is "flat":        
+            if self.laser_pulse == "flat":
                 input_deck.write('TEMPS_IMPUL_TABULE=0.0e-9,INTENSITE_TABULEE=0.0\n') # These need to change for approrpriate laser designs.
                 input_deck.write('TEMPS_IMPUL_TABULE=0.2e-9,INTENSITE_TABULEE=1.0\n')
                 input_deck.write('TEMPS_IMPUL_TABULE=%.1fe-9,INTENSITE_TABULEE=1.0\n'% (self.laser_pulse_duration-0.2))
                 input_deck.write('TEMPS_IMPUL_TABULE=%.1fe-9,INTENSITE_TABULEE=0.0\n' % (self.laser_pulse_duration))
-            elif self.laser_pulse is "quasiflat":
+            elif self.laser_pulse == "quasiflat":
                 input_deck.write('TEMPS_IMPUL_TABULE=0.0e-9,INTENSITE_TABULEE=0.0\n') # These need to change for approrpriate laser designs.
                 input_deck.write('TEMPS_IMPUL_TABULE=0.2e-9,INTENSITE_TABULEE=0.8\n')
                 input_deck.write('TEMPS_IMPUL_TABULE=%.1fe-9,INTENSITE_TABULEE=1.0\n'% (self.laser_pulse_duration-0.2))
                 input_deck.write('TEMPS_IMPUL_TABULE=%.1fe-9,INTENSITE_TABULEE=0.0\n' % (self.laser_pulse_duration))
-            elif self.laser_pulse is "ramp":
+            elif self.laser_pulse == "ramp":
                 x = numpy.arange(0.,self.laser_pulse_duration+1.0,1)
                 y = x**3
                 y = y/numpy.amax(y)
@@ -798,7 +798,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
     def sample_eos_type(self,value):
         """ Set sample_eos_type"""
         self.__sample_eos_type = checkAndSetSampleEosType(value)
-    
+
     @property
     def number_of_zones(self):
         """ Query for number of zones in mesh """
@@ -807,7 +807,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
     def number_of_zones(self,value):
         """ Set number of zones """
         self.__number_of_zones = checkAndSetNumberOfZones(value)
-    
+
     @property
     def feather_zone_width(self):
         """ Query for feather zone width in mesh """
@@ -816,7 +816,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
     def feather_zone_width(self,value):
         """ Set number of zones """
         self.__feather_zone_width = checkAndSetFeatherZoneWidth(value)
-    
+
     @property
     def minimum_zone_width(self):
         """ Query for minimum zone width """
@@ -825,7 +825,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
     def minimum_zone_width(self,value):
         """ Set minimum zone width """
         self.__minimum_zone_width = checkAndSetMinimumZoneWidth(value)
-    
+
     def _setDefaults(self):
         """ Method to pick sensible defaults for all parameters. """
         pass
@@ -834,7 +834,7 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
         if self.window is not None:
             if self.window_thickness == 0.0:
                 raise ValueError( "Window thickness cannot be 0.0")
-        
+
         # If BLF choice, check if the sample actually has a blf eos.
         if self.sample_eos_type is "blf":
             blf_elements = [ "Aluminium", "Gold", "Cobalt", "Copper",
@@ -881,7 +881,7 @@ def checkAndSetAblator(ablator):
     :param ablator: The ablator material to check.
     :return: The ablator choice after being checked.
     :raise ValueError: ablator not in ["CH", "Al", "Diamond", "Mylar", "Kapton"].
-    
+
     If new ablators are added, the refractive index must be updated in the _serialize function
     to account for the new material, otherwise a default value of 1.6 is used.
 
@@ -1219,14 +1219,14 @@ def checkAndSetSampleEosType(sample_eos_type):
     """
     Utility for choosing the EOS to use for simulation
     """
-    
+
     if sample_eos_type is None: # Set to default EOS (sesame)
         print "EOS type not defined, using default eos (sesame)"
         sample_eos_type = "sesame"
         return sample_eos_type
-    
+
     eos_choices = ["sesame", "blf"]
-    
+
     # Check if str.
     if not isinstance(sample_eos_type, str):
         raise TypeError("The parameter 'sample_eos_type' must be a str (sesame or blf)")
@@ -1236,7 +1236,7 @@ def checkAndSetSampleEosType(sample_eos_type):
         pass
     else:
         raise ValueError( "EOS must be either sesame or blf only")
-    
+
     return sample_eos_type
 
 ##################################################################
@@ -1247,11 +1247,11 @@ def checkAndSetNumberOfZones(number_of_zones):
     """
     Utility for checking the number of zones is valid
     """
-    
+
     # Set default value to 250
     if number_of_zones is None:
         number_of_zones = 250
-    
+
     # Make sure  number of zones > 200 and < 1000
     if number_of_zones < 150 or number_of_zones > 1000:
         raise ValueError( "Number of zones should be > 150 and < 1000")
@@ -1262,11 +1262,11 @@ def checkAndSetFeatherZoneWidth(feather_zone_width):
     """
     Utility for checking the feather zone width is valid
     """
-    
+
     # Set default value to 4.0
     if feather_zone_width is None:
         feather_zone_width = 4.0
-    
+
     if feather_zone_width < 2.0 or feather_zone_width > 10.0:
         raise ValueError( "Feather zone width should not be < 2.0 micron or > 10.0 micron")
 
@@ -1276,11 +1276,11 @@ def checkAndSetMinimumZoneWidth(minimum_zone_width):
     """
     Utility for checking the feather zone width is valid
     """
-    
+
     # Set default value to 4e-4
     if minimum_zone_width is None:
         minimum_zone_width = 4e-4
-    
+
     if minimum_zone_width < 0.0001 or minimum_zone_width > 0.001:
         raise ValueError( "Minimum zone width should not be < 1 Angstrom or > 10 Angstrom")
 
