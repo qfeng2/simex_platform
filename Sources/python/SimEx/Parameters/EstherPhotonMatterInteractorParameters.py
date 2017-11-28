@@ -845,6 +845,8 @@ class EstherPhotonMatterInteractorParameters(AbstractCalculatorParameters):
                 pass
             else:
                 raise RuntimeError("Sample does not have blf EOS... set sample_eos_type to None for default eos")
+        
+        # Add a consistency check for the number_of_layers (1 = abl, 2 = abl+sampl etc.).
 
 ###########################
 # Check and set functions #
