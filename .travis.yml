@@ -1,12 +1,10 @@
 language: python
 python:
-  - "3.4"
+  - "3.5"
 
 sudo: required
 dist: trusty
 
-compiler:
-    - g++-4.8
 addons:
   apt:
     packages:
