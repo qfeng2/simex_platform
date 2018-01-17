@@ -18,7 +18,6 @@ before_script:
     #- sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90
   - python --version
   - python -c "import numpy as np; print( np.__version__ )"
-  - python -c "import h5py as h5; print( h5.__version__ )"
   - ulimit -c unlimited
 script:
   - python -c "import numba; print (numba.__file__)"
