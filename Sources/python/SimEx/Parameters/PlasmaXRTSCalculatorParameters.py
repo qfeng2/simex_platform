@@ -35,6 +35,10 @@ from SimEx.Utilities.EntityChecks import checkAndSetInstance
 from SimEx.Utilities.EntityChecks import checkAndSetInteger
 from SimEx.Utilities.EntityChecks import checkAndSetPositiveInteger
 from SimEx.Utilities.EntityChecks import checkAndSetNonNegativeInteger
+from SimEx.Utilities.EntityChecks import checkAndSetPhysicalQuantity
+from SimEx.Utilities.Units import meter, second, kilogram, ampere, volt, joule, newton, kelvin, radian, degree, electronvolt, coulomb, gram
+from SimEx.Utilities.Units import zepto, atto, femto, pico, nano, micro, milli, centi, deci, kilo, mega, giga, tera, peta, exa
+
 
 class PlasmaXRTSCalculatorParameters(AbstractCalculatorParameters):
     """
@@ -577,9 +581,9 @@ def checkAndSetScatteringAngle(angle):
     if angle is None:
         raise RuntimeError( "Scattering angle not specified.")
 
-    angle = checkAndSetInstance( float, angle, None)
+    angle = checkAndSetPhysicalQuantity(angle, radian, 90.0*degree)
     # Check if in range.
-    if angle <= 0.0 or angle > 180.0:
+    if angle <= 0.0*degree or angle > 180.0*degree:
         raise ValueError
 
     # Return.
@@ -596,10 +600,10 @@ def checkAndSetPhotonEnergy(energy):
     if energy is None:
         raise RuntimeError( "Photon energy not specified.")
 
-    energy = checkAndSetInstance( float, energy, None)
+    energy = checkAndSetPhysicalQuantity( energy, electronvolt, 0.0*electronvolt)
 
     # Check if in range.
-    if energy <= 0.0:
+    if energy.m_as(electronvolt) <= 0.0:
         raise ValueError
 
     # Return.
@@ -639,8 +643,8 @@ def checkAndSetElectronTemperature(electron_temperature):
     """
     if electron_temperature is None:
         raise RuntimeError( "Electron temperature not specified.")
-    electron_temperature = checkAndSetInstance( float, electron_temperature, None)
-    if electron_temperature <= 0.0:
+    electron_temperature = checkAndSetPhysicalQuantity( electron_temperature, electronvolt, 0.0*electronvolt)
+    if electron_temperature.m_as(electronvolt) <= 0.0:
         raise ValueError( "Electron temperature must be positive.")
 
     return electron_temperature
@@ -663,8 +667,8 @@ def checkAndSetDensitiesAndCharge(electron_density, ion_charge, mass_density, el
 
     molar_weight = sum(element_abundances * molar_weights) / sum( element_abundances )
     if electron_density is None:
-        electron_density = mass_density * ion_charge * Avogadro / molar_weight
-        print("Setting electron density to %5.4e/cm**3." % (electron_density))
+        electron_density = mass_density * ion_charge * Avogadro / molar_weight / kilogram
+        print("Setting electron density to %5.4e/cm**3." % (electron_density.m_as((1./centi*meter**3))))
     if ion_charge is None:
         ion_charge = electron_density / (mass_density * Avogadro / molar_weight)
         print("Setting average ion charge to %5.4f." % (ion_charge))
@@ -958,10 +962,10 @@ def checkAndSetSourceSpectrumFWHM( fwhm ):
     """
 
     # Check type.
-    fwhm = checkAndSetInstance( float, fwhm, 5.0 )
+    fwhm = checkAndSetPhysicalQuantity( fwhm, 5.0*electronvolt )
 
     # Check positivity.
-    if fwhm <= 0.0:
+    if fwhm.m_as(electronvolt) <= 0.0:
         raise ValueError( "The parameter 'source_spectrum_fwhm' must be positive.")
 
     # All checked, return.
